@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" 
+    android:layout_height="@dimen/flie_item_line_height"
+    android:paddingTop="5dip"
+    android:paddingBottom="5dip"
+    android:paddingLeft="15dip"
+    android:paddingRight="10dip" >
+
+    <RelativeLayout
+        android:id="@+id/picker"
+        android:layout_width="30.0dip"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical" >
+
+        <CheckBox
+            android:id="@+id/child_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/checkbox_style"
+            android:focusable="false" />
+
+        <ProgressBar
+            android:id="@+id/child_progress"
+            style="@android:attr/progressBarStyleLarge"
+            android:layout_width="15.0dip"
+            android:layout_height="15.0dip"
+            android:focusable="false"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/child_item"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="0.0dip"
+        android:layout_toLeftOf="@id/picker" >
+
+        <LinearLayout 
+            android:id="@+id/child_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            
+            <TextView
+                android:id="@+id/child_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textAppearance="?android:textAppearanceMedium" />
+        
+            <TextView
+                android:id="@+id/child_path"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:layout_toRightOf="@id/child_name"
+                android:layout_alignTop="@id/child_name"
+                android:layout_marginLeft="5dip"
+                android:textColor="@color/file_detail_text_color"
+                android:textAppearance="?android:textAppearanceSmall" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/child_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/child_top"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/file_detail_text_color"
+            android:textAppearance="?android:textAppearanceSmall" />
+    </RelativeLayout>
+
+</RelativeLayout>

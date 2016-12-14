@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="flie_item_line_height">64px</dimen> 
+    <dimen name="path_gallery_line_height">64px</dimen>
+    <dimen name="storage_volume_item_line_height">75px</dimen>
+    <dimen name="storage_volume_item_icon_paddingleft">10dip</dimen>
+    <dimen name="storage_volume_item_icon_paddingright">10dip</dimen>
+    
+    <dimen name="garbage_finish_view_width">32.0dip</dimen>
+    <dimen name="garbage_finish_view_height">32.0dip</dimen>
+    <dimen name="garbage_group_image_width">36px</dimen>
+    <dimen name="garbage_group_image_height">36px</dimen>
+    
+    <dimen name="edit_adapter_img_width">68px</dimen>
+    <dimen name="edit_adapter_img_height">68px</dimen>
+    
+    <dimen name="start_stop_button_width">360px</dimen>
+    
+    <dimen name="dividing_line">0.5dp</dimen>
+    <!-- add by droi mingjun on 20160108 -->
+    <dimen name="progressinfo_left">78dp</dimen>
+    <dimen name="roundWidthLarge">1dp</dimen>
+    <dimen name="roundWidthSmall">6dp</dimen>
+    <dimen name="menorycardLeft">30dp</dimen>
+    <dimen name="menorysdcardLeft">200dp</dimen>
+    <dimen name="sdpercentLeft">231dp</dimen>
+    <dimen name="moneyinfo_roundprogressbar">195dp</dimen>
+    <dimen name="explore_category_roundprogressbar">135dip</dimen>
+    <dimen name="explore_category_roundprogressbar_height">140dip</dimen>
+    <dimen name="info_memory_top">100dp</dimen>
+    <dimen name="info_available_top">80dp</dimen>
+    <dimen name="CategoryButtonStylesmall_layout_height">80dp</dimen>  
+    <dimen name="roundprogressbar_startPosition">80dp</dimen>
+    <dimen name="explore_layout_height">90dp</dimen>
+    <dimen name="memory_percent_top">10dp</dimen>
+    <dimen name="roundprogressbar_percent_top">52dp</dimen>
+    <dimen name="memory_percent_textsize">18dp</dimen>
+    <dimen name="category_page_height">435dp</dimen>
+    <!-- end -->
+</resources>

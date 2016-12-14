@@ -1,0 +1,42 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_menu_searchs"
+        android:showAsAction="always"
+        android:title="@string/menu_item_search"/>
+    <item
+        android:id="@+id/selectall"
+        android:icon="@drawable/ic_menu_select_all"
+        android:title="@string/operation_selectall"/>
+    <item
+        android:id="@+id/sortBy"
+        android:icon="@drawable/ic_menu_sort"
+        android:title="@string/menu_item_sort">
+        <menu>
+            <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/sort_name"
+                android:title="@string/menu_item_sort_name"
+                android:checked="true"
+                />
+            <item
+                android:id="@+id/sort_date"
+                android:title="@string/menu_item_sort_date"
+                android:checked="false"/>
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/show_hide"
+        android:icon="@drawable/ic_menu_show_sys"
+        android:title="@string/operation_show_sysfile"/>
+    <item
+        android:id="@+id/menu_refresh"
+        android:icon="@drawable/ic_menu_refresh"
+        android:title="@string/operation_refresh"/>
+    <item
+        android:id="@+id/updateself"
+        android:icon="@drawable/ic_menu_refresh"
+        android:title="@string/software_update"/>
+</menu>

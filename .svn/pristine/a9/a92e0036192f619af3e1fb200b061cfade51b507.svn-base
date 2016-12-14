@@ -1,0 +1,72 @@
+package com.freeme.apk.view;
+
+import java.lang.reflect.Method;
+
+import android.content.Context;
+import android.preference.CheckBoxPreference;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.View;
+import android.widget.Checkable;
+import android.widget.CompoundButton;
+import com.freeme.apk.updateself.R;
+
+public class FreemeCheckboxPreference extends CheckBoxPreference {
+    private static final String TAG = "CheckboxPreference";
+    private final Listener mListener = new Listener();
+
+    private class Listener implements CompoundButton.OnCheckedChangeListener {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked == isChecked())
+                return;
+           
+            if (!callChangeListener(isChecked)) {
+                // Listener didn't like it, change it back.
+                // CompoundButton will make sure we don't recurse.
+                buttonView.setChecked(!isChecked);
+                return;
+            }
+            setChecked(isChecked);
+        }
+    }
+    
+    public FreemeCheckboxPreference(Context context) {
+        super(context, null);
+    }
+    
+    public FreemeCheckboxPreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        setLayoutResource(R.layout.freeme_preference);
+    }
+    
+    @Override
+    protected void onBindView(View view) {
+        super.onBindView(view);
+
+        View checkboxView = view.findViewById(android.R.id.checkbox);
+        if (checkboxView != null && checkboxView instanceof Checkable) {
+            
+            if (checkboxView instanceof SlidingSwitch) {
+                final SlidingSwitch switchView = (SlidingSwitch) checkboxView;
+                switchView.setOnCheckedChangeListener(null);
+            }
+            ((Checkable) checkboxView).setChecked(isChecked());
+        }
+
+        if (checkboxView instanceof SlidingSwitch) {
+            final SlidingSwitch switchView = (SlidingSwitch) checkboxView;
+            switchView.setOnCheckedChangeListener(mListener);
+        }
+        
+        //syncSummaryView(view);
+        try {
+            Method method = CheckBoxPreference.class.getMethod("syncSummaryView", View.class);
+            if (method != null) {
+                method.invoke(this, view);
+            }
+        } catch (Exception e) {
+            Log.i(TAG, "Exception " + e.getMessage());
+        }
+    }
+}

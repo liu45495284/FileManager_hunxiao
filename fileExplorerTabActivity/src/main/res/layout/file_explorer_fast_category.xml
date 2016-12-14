@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android_custom="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/file_browse_frame"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/secondary_title_background"
+    android:orientation="vertical" >
+
+    <com.freeme.filemanager.view.CompatGridView
+        android:id="@+id/category_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:numColumns="3"
+        android:scrollbars="none"
+        android:stretchMode="columnWidth" >
+    </com.freeme.filemanager.view.CompatGridView>
+
+    <!-- category information -->
+
+    <LinearLayout
+        android:id="@+id/round"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/explore_category_roundprogressbar_height"
+        android:layout_below="@id/category_buttons"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <com.freeme.filemanager.view.RoundProgressBar
+            android:id="@+id/mainroundProgressBar3"
+            android:layout_width="@dimen/explore_category_roundprogressbar"
+            android:layout_height="@dimen/explore_category_roundprogressbar"
+            android:layout_marginLeft="73dp"
+            android:background="@drawable/round_progress_bar_backgrount"
+            android_custom:roundColor="#D1D1D1"
+            android_custom:roundProgressColor="@android:color/black"
+            android_custom:roundWidth="@dimen/roundWidthSmall"
+            android_custom:textColor="#9A32CD"
+            android_custom:textSize="18sp" />
+
+        <com.freeme.filemanager.view.RoundProgressBar
+            android:id="@+id/mainroundProgressBar2"
+            android:layout_width="@dimen/explore_category_roundprogressbar"
+            android:layout_height="@dimen/explore_category_roundprogressbar"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="75dp"
+            android:background="@drawable/round_progress_bar_backgrount"
+            android_custom:roundColor="#D1D1D1"
+            android_custom:roundProgressColor="@android:color/black"
+            android_custom:roundWidth="@dimen/roundWidthSmall"
+            android_custom:textColor="#9A32CD"
+            android_custom:textSize="18sp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/round_page_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/category_buttons"
+        android:layout_marginTop="50dp" >
+
+        <TextView
+            android:id="@+id/sd_card"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/menorysdcardLeft"
+            android:layout_marginTop="@dimen/menorysdcardTop"
+            android:gravity="center"
+            android:text="@string/sd_info_storage"
+            android:textColor="@color/textColor" />
+
+        <TextView
+            android:id="@+id/sd_card_info"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sd_card"
+            android:layout_marginLeft="@dimen/menorysdcardLeft"
+            android:layout_marginTop="@dimen/menorysdcardTop"
+            android:gravity="center"
+            android:text="@string/enable_sd_card"
+            android:textColor="@color/textColor" />
+
+        <TextView
+            android:id="@+id/sd_percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sd_card_info"
+            android:layout_marginLeft="@dimen/sdpercentLeft"
+            android:layout_marginTop="@dimen/sd_percent_top"
+            android:gravity="center"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/sd_percent_textsize"
+            />
+
+        <TextView
+            android:id="@+id/memory_card"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/menorycardLeft"
+            android:layout_marginTop="@dimen/menorysdcardTop"
+            android:gravity="center"
+            android:text="@string/storage_phone"
+            android:textColor="@color/textColor" />
+
+        <TextView
+            android:id="@+id/memory_card_info"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/memory_card"
+            android:layout_marginLeft="@dimen/menorycardLeft"
+            android:layout_marginTop="@dimen/menorysdcardTop"
+            android:gravity="center"
+            android:textColor="@color/textColor" />
+
+        <TextView
+            android:id="@+id/memory_percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="90dp"
+            android:layout_marginTop="@dimen/memory_percent_top"
+            android:gravity="center"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/memory_percent_textsize" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/UsbStorage_block"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/UsbStorage_capacity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/UsbStorage_available"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp" />
+    </LinearLayout>
+</RelativeLayout>

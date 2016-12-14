@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <com.freeme.apk.view.FreemeCheckboxPreference
+        android:defaultValue="true"
+        android:key="autocheck_update_key"
+        android:title="@string/software_auto_check" />
+
+    <com.freeme.apk.view.FreemePreference
+        android:key="check_update_key"
+        android:title="@string/software_check_update" />
+
+</PreferenceScreen>

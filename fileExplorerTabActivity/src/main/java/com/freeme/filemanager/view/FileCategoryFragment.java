@@ -1,0 +1,859 @@
+/*
+ * This file is part of FileManager.
+ * FileManager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FileManager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * TYD Inc. (C) 2012. All rights reserved.
+ */
+package com.freeme.filemanager.view;
+
+import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.MediaStore;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.droi.sdk.analytics.DroiAnalytics;
+import com.freeme.filemanager.FileExplorerTabActivity;
+import com.freeme.filemanager.FileExplorerTabActivity.IBackPressedListener;
+import com.freeme.filemanager.FileManagerApplication;
+import com.freeme.filemanager.FileManagerApplication.SDCardChangeListener;
+import com.freeme.filemanager.R;
+import com.freeme.filemanager.controller.FileListCursorAdapter;
+import com.freeme.filemanager.controller.FileViewInteractionHub;
+import com.freeme.filemanager.controller.FileViewInteractionHub.Mode;
+import com.freeme.filemanager.controller.IFileInteractionListener;
+import com.freeme.filemanager.model.CategoryBar;
+import com.freeme.filemanager.model.FileInfo;
+import com.freeme.filemanager.model.GlobalConsts;
+import com.freeme.filemanager.util.FavoriteDatabaseHelper.FavoriteDatabaseListener;
+import com.freeme.filemanager.util.FileCategoryHelper;
+import com.freeme.filemanager.util.FileCategoryHelper.CategoryInfo;
+import com.freeme.filemanager.util.FileCategoryHelper.FileCategory;
+import com.freeme.filemanager.util.FileIconHelper;
+import com.freeme.filemanager.util.FileSortHelper;
+import com.freeme.filemanager.util.Util;
+import com.umeng.analytics.MobclickAgent;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class FileCategoryFragment extends BaseCategoryFragment implements
+        IFileInteractionListener, FavoriteDatabaseListener,
+        IBackPressedListener, SDCardChangeListener {
+    private static final String LOG_TAG = "FileCategoryActivity";
+
+    private FileListCursorAdapter mAdapter;
+
+    public FileViewInteractionHub mFileViewInteractionHub;
+
+    private FileCategoryHelper mFileCagetoryHelper;
+
+    private FileIconHelper mFileIconHelper;
+
+    private CategoryBar mCategoryBar;
+
+    private ScannerReceiver mScannerReceiver;
+
+    private FavoriteList mFavoriteList;
+
+    private ViewPage curViewPage = ViewPage.Invalid;
+
+    private ViewPage preViewPage = ViewPage.Invalid;
+
+    private FileExplorerTabActivity mActivity;
+
+    private View mRootView;
+
+    private LinearLayout mSdcardLayout;
+
+    private TextView mSdcardCapacity;
+
+    private TextView mSdcardAvailable;
+
+    private TextView mPhoneMemoryCapacity;
+
+    private TextView mPhoneMemoryAvailable;
+
+    private LinearLayout mExternalStorageBlock;
+
+    private FileViewFragment mFileViewActivity;
+
+    private boolean mConfigurationChanged = false;
+
+    private static final String ROOT_DIR = "/mnt";
+
+    private boolean mNeedRefreshCategoryInfos;
+
+    private boolean mNeedUpdateOnTabSelected;
+
+    private AsyncTask<Void, Void, Object> mRefreshCategoryInfoTask;
+
+    private AsyncTask<Void, Void, Cursor> mRefreshFileListTask;
+    private long sdCardUsed = 0;
+    private long sdCard = 0;
+    private long memoryCardUsed = 0;
+    private long memoryCard = 0;
+    private String sdCardUseds;
+    private long sdCardUsedl;
+    private String sdCards;
+    private String sdCardFrees;
+    private long memoryCardUsedl;
+    private String memoryCards;
+    private String memoryFrees;
+    private long progress = 0;
+    private long progress1 = 0;
+    private boolean noSdCard = false;
+
+    private boolean isRefreshTimerCanceled = false;
+    private static final int REFRESH_FILE_LIST_TIMER = 10 * 1000;
+    private static final int REFRESH_FILE_LIST = 1000;
+    private Timer refreshFileListTimer;
+    private boolean mIsPause = false;
+    // */ add by droi xueweili for get Sd listener on 20160419
+    private FileManagerApplication mApplication;
+
+    // */
+
+    private final int TYPE_NOTIFY_REFRESH_HIDEFILE = 1;
+    private ProgressDialog mProgressDialog;
+
+    private boolean isFirstRefreshDatabase = true;
+
+
+
+    public void setConfigurationChanged(boolean changed) {
+        mConfigurationChanged = changed;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+
+
+        mActivity = ((FileExplorerTabActivity) getActivity());
+        mFileViewActivity = (FileViewFragment) ((FileExplorerTabActivity) mActivity)
+                .getFragment(Util.SDCARD_TAB_INDEX);
+        mRootView = inflater.inflate(R.layout.file_explorer_category, null,
+                false);
+        mFileViewInteractionHub = new FileViewInteractionHub(this, 0);
+        mFileViewInteractionHub.setMode(Mode.View);
+        mFileIconHelper = new FileIconHelper(mActivity);
+        mFavoriteList = new FavoriteList(mActivity,
+                (ListView) mRootView.findViewById(R.id.favorite_list), this,
+                mFileIconHelper);
+        mAdapter = new FileListCursorAdapter(mActivity, null,
+                mFileViewInteractionHub, mFileIconHelper);
+
+        ListView fileListView = (ListView) mRootView
+                .findViewById(R.id.file_path_list);
+        mExternalStorageBlock = (LinearLayout) mRootView
+                .findViewById(R.id.UsbStorage_block);
+        mApplication = (FileManagerApplication) mActivity.getApplication();
+        fileListView.setAdapter(mAdapter);
+        setHasOptionsMenu(true);
+        mFileCagetoryHelper = new FileCategoryHelper(mActivity);
+        mFileViewInteractionHub.setRootPath(ROOT_DIR);
+        registerScannerReceiver();
+        FileCategory category = (FileCategory) getArguments().getSerializable(
+                FileCategroyFastFragment.CATEGORY_TAG);
+        onCategorySelected(category);
+
+        return mRootView;
+    }
+
+    private void registerScannerReceiver() {
+        mScannerReceiver = new ScannerReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        // add by xueweili for get sdcard
+        intentFilter.setPriority(1000);
+        intentFilter.addAction(GlobalConsts.BROADCAST_REFRESH);
+        intentFilter.addDataScheme("file");
+        mActivity.registerReceiver(mScannerReceiver, intentFilter);
+
+        // */ add by droi xueweili for get Sd listener on 20160419
+        mApplication.addSDCardChangeListener(this);
+        // */
+    }
+
+    public enum ViewPage {
+        Home, Favorite, Category, Invalid
+    }
+
+    private void showPage(ViewPage page) {
+        if (curViewPage == page)
+            return;
+
+        curViewPage = page;
+
+        showView(R.id.file_path_list, false);
+        showView(R.id.gallery_navigation_bar, false);
+        showView(R.id.sd_not_available_page, false);
+        mFavoriteList.show(false);
+
+
+        switch (page) {
+        case Favorite:
+            showView(R.id.gallery_navigation_bar, true);
+            mFavoriteList.update();
+            mFavoriteList.show(true);
+            showEmptyView(mFavoriteList.getCount() == 0);
+            break;
+        case Category:
+            showView(R.id.gallery_navigation_bar, true);
+            break;
+        }
+    }
+
+    @Override
+    public void showPathGalleryNavbar(boolean show) {
+        showView(R.id.gallery_navigation_bar, show);
+    }
+
+    private void showEmptyView(boolean show) {
+        View emptyView = mRootView.findViewById(R.id.category_empty_view);
+        if (emptyView != null) {
+            emptyView.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private void showView(int id, boolean show) {
+        View view = mRootView.findViewById(id);
+        // memoryCardView.setVisibility(show ? View.GONE : View.VISIBLE);
+        // // memoryCardinfoView.setVisibility(show ? View.GONE : View.VISIBLE);
+        // / sdCardView.setVisibility(show ? View.GONE : View.VISIBLE);
+        // sdCardinfoView.setVisibility(show ? View.GONE : View.VISIBLE);
+        if (view != null) {
+            view.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private Timer clickWaitTimer;
+    View clickView = null;
+
+    private void setTextView(int id, String t) {
+        TextView text = (TextView) mRootView.findViewById(id);
+        text.setText(t);
+        text.setTextSize(14);
+    }
+
+    private void onCategorySelected(FileCategory fileCategory) {
+        if (mFileCagetoryHelper.getCurCategory() != fileCategory) {
+            mFileCagetoryHelper.setCurCategory(fileCategory);
+            mFileViewInteractionHub.refreshFileList();
+        }
+        Log.i("liuhaoran" , "onCategorySelected = " + fileCategory);
+        if (fileCategory == FileCategory.Favorite) {
+            showPage(ViewPage.Favorite);
+        } else {
+            showPage(ViewPage.Category);
+        }
+
+        mFileViewInteractionHub.setCurrentPath(mFileViewInteractionHub
+                .getRootPath()
+                + "/"
+                + mActivity.getString(mFileCagetoryHelper
+                        .getCurCategoryNameResId()));
+    }
+
+    @Override
+    public boolean onBack() {
+        if (mFileViewInteractionHub == null) {
+            return false;
+        }
+        return mFileViewInteractionHub.onBackPressed();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (mFileCagetoryHelper.getCurCategory() != FileCategory.Favorite) {
+            mFileViewInteractionHub.onCreateOptionsMenu(menu);
+        }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        if (mFileCagetoryHelper.getCurCategory() != FileCategory.Favorite) {
+            mFileViewInteractionHub.onPrepareOptionsMenu(menu);
+        }
+    }
+
+    @Override
+    public boolean onRefreshFileList(String path,
+            final FileSortHelper fileSortHelper) {
+        setNeedRefreshCategoryInfos(true);
+        // add by droi heqianqian for refresh favoritelist
+        mFavoriteList.initList();
+        // end
+        /*/ freeme.liuhaoran , 20160818 , uselese
+        if (curViewPage == ViewPage.Home) {
+            requestPermissionsMonery();
+            return true;
+        }
+        //*/
+        final FileCategory curCategory = mFileCagetoryHelper.getCurCategory();
+        if (curCategory == FileCategory.Favorite
+                || curCategory == FileCategory.All) {
+            return false;
+        }
+
+        //*/ freeme.liuhaoran , 20160812 , refactor
+        RefreshFileListTask mRefreshFileListTask = new RefreshFileListTask(fileSortHelper , curCategory);
+        mRefreshFileListTask.execute();
+        //*/
+
+        /*/ freeme.liuhaoran , 20160812 , refactor
+        mRefreshFileListTask = new AsyncTask<Void, Void, Cursor>() {
+
+            @Override
+            protected Cursor doInBackground(Void... params) {
+
+                // add by tyd sxp 20140917 for sort
+                mAdapter.setSortHelper(fileSortHelper);
+                // end
+                return mFileCagetoryHelper.query(curCategory,
+                        fileSortHelper.getSortMethod());
+            }
+
+            @Override
+            protected void onPostExecute(Cursor cursor) {
+
+                if (cursor != null) {
+                    showEmptyView(cursor.getCount() == 0);
+                    mAdapter.changeCursor(cursor);
+                    if (curViewPage != ViewPage.Home) {
+                        showView(R.id.file_path_list, true);
+                    }
+                }
+
+            }
+        };
+
+        mRefreshFileListTask.execute(new Void[0]);
+        //*/
+
+        return true;
+    }
+
+
+    //*/ freeme.liuhaoran , 20160812 , refactor
+    private class RefreshFileListTask extends AsyncTask<Void, Void, Cursor>{
+        private FileSortHelper mFileSortHelper;
+        private FileCategory mCurCategory;
+
+        private RefreshFileListTask(FileSortHelper fileSortHelper , FileCategory curCategory) {
+            mFileSortHelper = fileSortHelper;
+            mCurCategory = curCategory;
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+            if(mProgressDialog == null){
+                mProgressDialog = new ProgressDialog(mActivity);
+                mProgressDialog.setTitle(getString(R.string.operation_load));
+                mProgressDialog.setMessage(getString(R.string.operation_loading));
+                mProgressDialog.setIndeterminate(false);
+                mProgressDialog.setCancelable(false);
+            }
+
+            if (curViewPage != ViewPage.Home) {
+                mProgressDialog.show();
+            }
+
+        }
+
+        @Override
+        protected Cursor doInBackground(Void... params) {
+
+            // add by tyd sxp 20140917 for sort
+            mAdapter.setSortHelper(mFileSortHelper);
+            // end
+            Cursor cursor = mFileCagetoryHelper.query(mCurCategory,
+                    mFileSortHelper.getSortMethod());
+
+            if (cursor != null) {
+                String[] fils = new String[cursor.getCount()];
+                if(isFirstRefreshDatabase && cursor.moveToFirst()){
+                    cursor.moveToFirst();
+                    int i = 0;
+                    do{
+                        fils[i] = cursor.getString(cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATA));
+                        i ++;
+                    }while(cursor.moveToNext());
+//                    mFileCagetoryHelper.getCategoryInfo()
+                    isFirstRefreshDatabase = false;
+                    mFileCagetoryHelper.deleteNoExistFile(fils);
+                }
+            }
+
+            cursor = mFileCagetoryHelper.query(mCurCategory,
+                    mFileSortHelper.getSortMethod());
+
+            return cursor;
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+
+
+            if (cursor != null) {
+
+                showEmptyView(cursor.getCount() == 0);
+                mAdapter.changeCursor(cursor);
+                if (curViewPage != ViewPage.Home) {
+                    showView(R.id.file_path_list, true);
+                    curViewPage = ViewPage.Home;
+
+                }
+            }
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+
+            mFileViewInteractionHub.setRefresh(true);
+        }
+    }
+    //*/
+
+
+
+
+    @Override
+    public View getViewById(int id) {
+        return mRootView.findViewById(id);
+    }
+
+    @Override
+    public Context getContext() {
+        return mActivity;
+    }
+
+    @Override
+    public void onDataChanged() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                boolean bool = false;
+                FileCategory curCategory = mFileCagetoryHelper.getCurCategory();
+                if (curCategory == FileCategory.Favorite) {
+                    return;
+                }
+                CategoryInfo categoryInfo = mFileCagetoryHelper
+                        .getCategoryInfos().get(
+                                mFileCagetoryHelper.getCurCategory());
+                mAdapter.notifyDataSetChanged();
+                // modify by tyd sxp 20140910 for showEmptyView Bug
+                if ((categoryInfo == null)
+                        || (mAdapter.getCount() != categoryInfo.count)) {
+                    bool = false;
+                } else if (mAdapter.getCount() == 0) {
+                    bool = true;
+                }
+                showEmptyView(bool);
+            }
+        });
+    }
+
+    @Override
+    public void onPick(FileInfo f) {
+    }
+
+    @Override
+    public boolean shouldShowOperationPane() {
+        return true;
+    }
+
+    @Override
+    public boolean onOperation(int id) {
+        mFileViewInteractionHub.addContextMenuSelectedItem();
+        switch (id) {
+        case GlobalConsts.MENU_COPY:
+            copyFileInFileView(mFileViewInteractionHub.getSelectedFileList());
+            mFileViewInteractionHub.clearSelection();
+            break;
+        case GlobalConsts.MENU_MOVE:
+            startMoveToFileView(mFileViewInteractionHub.getSelectedFileList());
+            mFileViewInteractionHub.clearSelection();
+            break;
+        case GlobalConsts.OPERATION_UP_LEVEL:
+            setHasOptionsMenu(false);
+            getFragmentManager().popBackStack();
+            break;
+        default:
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String getDisplayPath(String path) {
+        String displayPath = mActivity.getString(R.string.tab_category)
+                + path.substring(ROOT_DIR.length());
+        Log.i("liuhaoran", "displayPath = " + displayPath);
+        Log.i("liuhaoran", "path = " + path);
+        return displayPath;
+    }
+
+    @Override
+    public String getRealPath(String displayPath) {
+        if (!TextUtils.isEmpty(displayPath)) {
+            if (displayPath.equals(mActivity.getString(R.string.tab_category))) {
+                return ROOT_DIR;
+            }
+        }
+        return displayPath;
+    }
+
+    @Override
+    public boolean shouldHideMenu(int menu) {
+        return (menu == GlobalConsts.MENU_NEW_FOLDER
+                || menu == GlobalConsts.MENU_SEARCH
+                || menu == GlobalConsts.MENU_COMPRESS || menu == GlobalConsts.MENU_PASTE);
+    }
+
+    @Override
+    public void addSingleFile(FileInfo file) {
+        refreshList();
+    }
+
+    @Override
+    public Collection<FileInfo> getAllFiles() {
+        return mAdapter.getAllFiles();
+    }
+
+    @Override
+    public FileInfo getItem(int pos) {
+        return mAdapter.getFileItem(pos);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mAdapter.getCount();
+    }
+
+    @Override
+    public void sortCurrentList(FileSortHelper sort) {
+        refreshList();
+    }
+
+    private void refreshList() {
+        mFileViewInteractionHub.refreshFileList();
+    }
+
+    private void copyFileInFileView(ArrayList<FileInfo> files) {
+        if (files.size() == 0)
+            return;
+        mFileViewActivity.copyFile(files);
+        mActivity.getActionBar().setSelectedNavigationItem(
+                Util.SDCARD_TAB_INDEX);
+    }
+
+    private void startMoveToFileView(ArrayList<FileInfo> files) {
+        if (files.size() == 0)
+            return;
+        mFileViewActivity.moveToFile(files);
+        mActivity.getActionBar().setSelectedNavigationItem(
+                Util.SDCARD_TAB_INDEX);
+    }
+
+    @Override
+    public FileIconHelper getFileIconHelper() {
+        return mFileIconHelper;
+    }
+
+    private Handler refreshFileListHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case TYPE_NOTIFY_REFRESH_HIDEFILE:
+                showUI();
+                break;
+            }
+            super.handleMessage(msg);
+        }
+
+    };
+
+    private void showUI() {
+        if (preViewPage != ViewPage.Invalid) {
+            showPage(preViewPage);
+            preViewPage = ViewPage.Invalid;
+        }
+        mFileViewInteractionHub.refreshFileList();
+
+        mActivity.invalidateOptionsMenu();
+    }
+
+    public void setNeedRefreshCategoryInfos(boolean paramBoolean) {
+        this.mNeedRefreshCategoryInfos = paramBoolean;
+    }
+
+    // process file changed notification, using a timer to avoid frequent
+    // refreshing due to batch changing on file system
+    synchronized public void notifyFileChanged(boolean flag) {
+        final boolean mFlag = flag;
+        if (timer != null) {
+            timer.cancel();
+        }
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            public void run() {
+                timer = null;
+                Message message = new Message();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("flag", mFlag);
+                message.setData(bundle);
+                message.what = MSG_FILE_CHANGED_TIMER;
+                handler.sendMessage(message);
+            }
+
+        }, 100);
+
+    }
+
+    private static final int MSG_FILE_CHANGED_TIMER = 100;
+
+    private Timer timer;
+
+    private Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case MSG_FILE_CHANGED_TIMER:
+                showUI();
+                break;
+            }
+            super.handleMessage(msg);
+        }
+
+    };
+
+
+    public class ScannerReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(LOG_TAG,
+                    "FilecategoryACtivity, ScannerReceiver onReceive(), intent:  "
+                            + intent);
+            String action = intent.getAction();
+            if (action.equals(GlobalConsts.BROADCAST_REFRESH)) {
+                Log.i("ScannerReceiver","action = " + action);
+                if (intent
+                        .getIntExtra(GlobalConsts.BROADCAST_REFRESH_EXTRA, -1) == GlobalConsts.BROADCAST_REFRESH_TABCATEGORY) {
+                        Log.i("ScannerReceiver","action = " + action);
+                    refreshFileListHandler.sendEmptyMessageDelayed(TYPE_NOTIFY_REFRESH_HIDEFILE , 110);
+                    showUI();
+                }
+            }
+        }
+    }
+
+    // update the count of favorite
+    @Override
+    public void onFavoriteDatabaseChanged() {
+        mFileViewInteractionHub.notifyRefreshViewInfo();
+        if (curViewPage == ViewPage.Favorite) {
+            showEmptyView(mFavoriteList.getCount() == 0);
+        }
+    }
+
+    @Override
+    public void runOnUiThread(Runnable r) {
+        mActivity.runOnUiThread(r);
+    }
+
+    String mPageName = "page1";
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("MainScreen");
+        DroiAnalytics.onFragmentStart(getActivity(), mPageName);
+        // add by mingjun 2015-15-26 for refreshfile
+        // add by droi heqianqian for refresh favoritelist on 20151224
+          mFileViewInteractionHub.refreshFileList();
+         // end
+         Log.i("liuhaoran3", "categoryFragment" + "onResume");
+         
+    }
+    
+
+    @Override
+    public void pagerUserHide() {
+        super.pagerUserHide();
+        
+        if (clickWaitTimer != null) {
+            clickWaitTimer.cancel();
+        }
+        if (refreshFileListTimer != null) {
+            isRefreshTimerCanceled = true;
+            refreshFileListTimer.cancel();
+        }
+    
+    }
+    @Override
+    public void pagerUserVisible() {
+        super.pagerUserVisible();
+        isRefreshTimerCanceled = false;
+      showUI();
+        Log.i("xueweili", "v pagerUserHide" + (isVisible())+(isHidden()) + (isAdded())+(isResumed()));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("MainScreen");
+        DroiAnalytics.onFragmentEnd(getActivity(), mPageName);
+        Log.i("liuhaoran3", "categoryFragment" + "onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.i("liuhaoran3", "categoryFragment" + "onStop");
+    }
+
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mScannerReceiver != null) {
+            mActivity.unregisterReceiver(mScannerReceiver);
+
+            /*/add by droi xueweili for get Sd listener on 20160419
+            mApplication.removeSDCardChangeListener(this);
+            //*/
+        }
+        // */ Added by tyd wulianghuan 2013-12-26 for fix NullPointException
+        if (mFileViewInteractionHub != null) {
+            // keep the progressDialog's lifecycle is consistent with mActivity
+            mFileViewInteractionHub.DismissProgressDialog();
+            // to cancel the doing works for this context is destroyed
+            mFileViewInteractionHub.onOperationButtonCancel();
+        }
+        if(mApplication != null){
+            mApplication.removeSDCardChangeListener(this);
+        }
+        // */
+    }
+
+    @Override
+    public void hideVolumesList() {
+
+    }
+
+    @Override
+    public void onRefreshMenu(boolean path) {
+
+    }
+
+    final private int REQUEST_CODE_ASK_PERMISSIONS = 100;
+
+    private void requestPermissionsMonery() {
+        Log.i("sunny", "requestPermissionsMonery()");
+        int hasWriteContactsPermission = getActivity().checkSelfPermission(
+                Manifest.permission.READ_PHONE_STATE);
+        if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
+            getActivity().requestPermissions(
+                    new String[] { Manifest.permission.READ_PHONE_STATE },
+                    REQUEST_CODE_ASK_PERMISSIONS);
+            return;
+        }
+        // int hasWriteContactsPermission1 =
+        // getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        // if (hasWriteContactsPermission1 != PackageManager.PERMISSION_GRANTED)
+        // {
+        // getActivity().requestPermissions(new String[]
+        // {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+        // REQUEST_CODE_ASK_PERMISSIONS);
+        //
+        // }
+        // int hasWriteContactsPermission2 =
+        // getActivity().checkSelfPermission(Manifest.permission.WRITE_MEDIA_STORAGE);
+        // if (hasWriteContactsPermission2 != PackageManager.PERMISSION_GRANTED)
+        // {
+        // getActivity().requestPermissions(new String[]
+        // {Manifest.permission.WRITE_MEDIA_STORAGE},
+        // REQUEST_CODE_ASK_PERMISSIONS);
+        //
+        // }
+        // TODO permission
+        int hasWriteContactsPermission3 = getActivity().checkSelfPermission(
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (hasWriteContactsPermission3 != PackageManager.PERMISSION_GRANTED) {
+            getActivity().requestPermissions(
+                    new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+                    REQUEST_CODE_ASK_PERMISSIONS);
+            return;
+        }
+    }
+
+    // */ add by droi xueweili for get Sd listener to refresh progressBar on
+    // 20160419
+    @Override
+    public void onMountStateChange(int flag) {
+        if (flag == SDCardChangeListener.flag_INJECT) {
+            notifyFileChanged(true);
+        } else {
+            notifyFileChanged(false);
+        }
+    }
+    // */
+
+    @Override
+    public void finish() {
+        // TODO Auto-generated method stub
+        if(mRootView != null){
+            mActivity.finish();
+            }else {
+                return;
+            }
+    }
+
+
+    @Override
+    public void initHotKnot() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void setHotKnot() {
+        // TODO Auto-generated method stub
+
+    }
+}

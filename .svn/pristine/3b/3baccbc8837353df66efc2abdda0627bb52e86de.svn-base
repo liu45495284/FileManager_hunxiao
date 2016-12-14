@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <dimen name="common_dialog_width">272dip</dimen>
+   <dimen name="common_dialog_title_height">48.0dip</dimen>
+   <dimen name="common_dialog_message_height">64.0dip</dimen>
+   <dimen name="common_dialog_content_height">180.0dip</dimen>
+   <dimen name="common_dialog_bottom_height">48.0dip</dimen>
+   
+    <dimen name="common_dialog_title_tsize">20.0sp</dimen>
+    <dimen name="common_dialog_message_tsize">17.0sp</dimen>
+    <dimen name="common_dialog_bottom_margin">0dip</dimen>
+    <dimen name="common_dialog_left_margin">0dip</dimen>
+    <dimen name="common_dialog_divide_width">1dip</dimen>
+    <dimen name="common_dialog_bottom_top">0.0dip</dimen>
+    <dimen name="common_dialog_divide_top_margin">0.0dip</dimen>
+    <dimen name="common_dialog_divide_bottom_margin">1.0dip</dimen>
+    <dimen name="common_dialog_text_paddingLeft">20.0dip</dimen>
+    <dimen name="common_dialog_text_paddingRight">20.0dip</dimen>
+   
+   <color name="common_dialog_title_tcolor">#ff0b984c</color>
+   <color name="common_dialog_message_tcolor">#ff4f504d</color>
+   <color name="common_dialog_button_tcolor">#ff4e4f4c</color>
+   <color name="common_divider_color">#ffd4d4d4</color>
+   <color name="common_setting_item_pressed">#ffdddddd</color>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string-array name="group_item_names">
+        <item>系统临时文件</item>
+        <item>略缩图缓存文件</item>
+        <item>应用程序缓存</item>
+        <item>空文件夹</item>
+        <item>程序卸载残留</item>
+    </string-array>
+</resources>

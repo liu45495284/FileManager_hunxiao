@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <color name="gray">#ffa6a6a0</color>
+    <color name="file_detail_text_color">#ff7f7f7f</color>
+
+    <!--Added by Tyd Linguanrong for [tyd00519372] add category page background-->
+    <!-- <color name="category_page_background">#ffe9e8e8</color> -->
+    <!--Tyd-->
+
+    <color name="actionbar_color">#ffa800</color>
+    <color name="no_file">#d6d6d6</color>
+    <color name="text_press_color">#FFBA31</color>
+    <color name="text_normal_color">#A5A2A5</color>
+    <color name="roundProgressColor">#FFAE40</color>
+    <color name="roundProgressColorb">#CA8E8E</color>
+    <color name="roundColor">#F7F7F8</color>
+    <color name="textColor">#F6A941</color>
+    <color name="textColor2">#999999</color>
+    <color name="notextColor">#929292</color>
+     <color name="transparent">#00000000</color>
+</resources>

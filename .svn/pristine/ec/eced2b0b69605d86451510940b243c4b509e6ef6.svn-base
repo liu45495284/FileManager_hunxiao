@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="updateself_verison_update">版本更新</string>
+    <string name="updateself_verison_name">版本名稱:%s</string>
+    <string name="updateself_verison_content">更新內容:%s</string>
+    <string name="updateself_attention">溫馨提示</string>
+    <string name="updateself_network_error">網路異常，請檢查網路設定後重試</string>
+    <string name="updateself_later">下次</string>
+    <string name="updateself_download_is_not_wifi">您當前處於數據網絡下，繼續下載可能產生流量費用，是否繼續？</string>
+    <string name="updateself_update">更新</string>
+    <string name="updateself_exit">退出</string>
+    <string name="updateself_try_again">重試壹下</string>
+    <string name="updateself_notify_success_congrate">恭喜您，更新成功！</string>
+    <string name="updateself_notify_success_arg">%s 已成功更新至最新版本</string>
+    <string name="updateself_downloaded">已下載：%s</string>
+    <string name="updateself_download_use_mobile">當前使用移動網絡，請知悉</string>
+    <string name="updateself_download_connect_error">當前網絡連接超時，請重試</string>
+    <string name="updateself_downloading">當前正在下載，請勿退出應用</string>
+    <string name="updateself_no_new">已经是最新版本</string>
+    
+    <!-- Notification -->
+    <string name="updateself_version_code">新版本: %s</string>
+    <string name="updateself_version_size">大小: %s</string>
+    <string name="updateself_update_right_now">點擊下載</string>
+    <string name="updateself_download_continue">继续下载</string>
+    <string name="updateself_download_continue_mobile">當前處於數據網絡下，是否繼續？</string>
+    <string name="updateself_download_sucessed">%s 下載完成, 點擊安裝</string>
+    <string name="updateself_no_enough_space_notice">存儲空間不足，無法下載</string>
+    <string name="updateself_downloaded_file_error">下載文件出錯</string>
+    <string name="software_check_update">檢查更新</string>
+    <string name="software_auto_check">開啓自動檢查</string>
+    <string name="software_update">應用更新</string>
+</resources>

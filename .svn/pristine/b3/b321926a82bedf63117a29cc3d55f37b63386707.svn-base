@@ -1,0 +1,982 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein is
+ * confidential and proprietary to MediaTek Inc. and/or its licensors. Without
+ * the prior written permission of MediaTek inc. and/or its licensors, any
+ * reproduction, modification, use or disclosure of MediaTek Software, and
+ * information contained herein, in whole or in part, shall be strictly
+ * prohibited.
+ * 
+ * MediaTek Inc. (C) 2010. All rights reserved.
+ * 
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER
+ * ON AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL
+ * WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR
+ * NONINFRINGEMENT. NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH
+ * RESPECT TO THE SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY,
+ * INCORPORATED IN, OR SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES
+ * TO LOOK ONLY TO SUCH THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO.
+ * RECEIVER EXPRESSLY ACKNOWLEDGES THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO
+ * OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES CONTAINED IN MEDIATEK
+ * SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK SOFTWARE
+ * RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S
+ * ENTIRE AND CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE
+ * RELEASED HEREUNDER WILL BE, AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE
+ * MEDIATEK SOFTWARE AT ISSUE, OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE
+ * CHARGE PAID BY RECEIVER TO MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ *
+ * The following software/firmware and/or related documentation ("MediaTek
+ * Software") have been modified by MediaTek Inc. All revisions are subject to
+ * any receiver's applicable license agreements with MediaTek Inc.
+ */
+
+package com.freeme.filemanager.view;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.KeyguardManager;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.drm.DrmManagerClient;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.os.PowerManager;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
+
+import com.freeme.filemanager.R;
+import com.freeme.filemanager.controller.FileInfoAdapter;
+import com.freeme.filemanager.controller.FileInfoComparator;
+import com.freeme.filemanager.model.EditUtility;
+import com.freeme.filemanager.model.FileInfo;
+import com.freeme.filemanager.model.FileManagerLog;
+import com.freeme.filemanager.model.NavigationHistory;
+import com.freeme.filemanager.model.NavigationHistory.NavigationRecord;
+import com.freeme.filemanager.util.MountPointHelper;
+import com.freeme.filemanager.util.OptionsUtil;
+
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.SparseBooleanArray;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+
+
+
+public abstract class FileManagerBaseActivity extends Activity implements OnItemClickListener,
+        OnClickListener {
+    private static final String TAG = "FileManagerBaseActivity";
+    private static final boolean INSTRUMENTATION_DEBUG = false;
+
+    // category folders for CU; must be a sorted array for comparator use
+    private static final String[] sCategoryArray = { "Document", "Download", "Music", "Photo",
+            "Received File", "Video" };
+    public static List<String> sCategoryFoldersPath = new ArrayList<String>();
+
+    public static final int NUM_FIRST_VALID_FOLDER = 1;
+
+    private static final int CONTENT_BG_COLOR = 0xff000000;
+    // maximum tab text length is 10
+    private static final int TAB_TEXT_LENGTH = 10;
+    private static final long NAV_BAR_AUTO_SCROLL_DELAY = 100;
+    private static final int FILE_DIRECT_LOAD_THRESHOLD = 150;
+
+    // drm lock type
+    public static final int NOT_DRM_FILE = -1;
+
+    // screen resolution
+    private int mTabMarginLeft = 0;
+    private int mTabMarginRight = 0;
+    private int mHomeBtnPadding = 0;
+
+    protected DrmManagerClient mDrmManagerClient = null;
+    protected MountPointHelper mMountPointHelper = null;
+
+    // view related member variables
+    protected Resources mResources = null;
+    protected Locale mLocale = null;
+    protected ListView mListView = null;
+    protected FileInfoAdapter mAdapter = null;
+
+    protected List<FileInfo> mFileInfoList = null;
+    protected List<FileInfo> mPreveFileInfoList = null;
+
+    private List<String> mTabNameList = null;
+    private NavigationHistory mNavHistory = null;
+
+    protected HorizontalScrollView mNavigationBar = null;
+    protected LinearLayout mTabsHolder = null;
+    private Button mBlankTab = null;
+
+    private ProgressDialog mLoadingDialog = null;
+
+    protected String mCurrentDirPath = "";
+    protected String mSelectedFileName = null;
+    protected int mTop = -1;
+
+    protected LoadListViewTask mLoadListViewTask = null;
+    private BroadcastReceiver mReceiver;
+
+    private int mTabsCounter = -1;
+    private int mSelection = 0;
+    protected int mSortBy = 0;
+
+    protected boolean mInForeground = true;
+    protected long mCurrentDirModifiedTime = -1;
+    private PowerManager.WakeLock mWakeLock = null;
+
+    /** Min time for showing LoadingDialog while doing LoadListViewTask */
+    private final static long MINTIME_DIALOGSHOW = 300;
+    private final static int MSG_DIALOG_CLOSE = 1;
+    protected Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+            case MSG_DIALOG_CLOSE:
+                dismissLoadingDialog();
+                break;
+            }
+        }
+    };
+
+    /**
+     * This method is called when the activity is first created.
+     * @param savedInstanceState the bundle contains the data it most recently supplied in
+     *            onSaveInstanceState(Bundle)
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        FileManagerLog.d(TAG, "onCreate");
+
+        if (INSTRUMENTATION_DEBUG) {
+            // make sure device wakes up
+            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
+                    | PowerManager.ACQUIRE_CAUSES_WAKEUP, "file manager");
+            mWakeLock.acquire();
+
+            // disable keylock
+            KeyguardManager keyGuardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+            KeyguardManager.KeyguardLock lock = keyGuardManager
+                    .newKeyguardLock("com.freeme.filemanager");
+            lock.disableKeyguard();
+        }
+
+        // remove any managed dialog
+        if (savedInstanceState != null) {
+            FileManagerLog.d(TAG, "saved instance is not null");
+            Bundle b = savedInstanceState.getBundle("android:savedDialogs");
+            if (b != null) {
+                savedInstanceState.putBundle("android:savedDialogs", null);
+            }
+        }
+
+        mLocale = getResources().getConfiguration().locale;
+        if (OptionsUtil.isDrmSupported()) {
+            mDrmManagerClient = new DrmManagerClient(getApplicationContext());
+        }
+
+        mMountPointHelper = MountPointHelper.getInstance();
+        mMountPointHelper.init(getApplicationContext(), mDrmManagerClient);
+
+        // start watching external storage change
+        startWatchingExternalStorage();
+
+        // set resources
+        mResources = getResources();
+
+        // get screen resolution
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        // FIXME: These Magic Number issues should be fixed.
+        // These codes should be rewrite, and remove the const values.
+        if (dm.densityDpi == DisplayMetrics.DENSITY_HIGH) { // hdpi
+            FileManagerLog.i(TAG, "hdpi");
+            mTabMarginLeft = -15;
+            mTabMarginRight = 0;
+            mHomeBtnPadding = 20;
+        } else if (dm.densityDpi == DisplayMetrics.DENSITY_MEDIUM) { // mdpi
+            FileManagerLog.i(TAG, "mdpi");
+            mTabMarginLeft = -10;
+            mTabMarginRight = 0;
+            mHomeBtnPadding = 15;
+        } else { // ldpi
+            FileManagerLog.i(TAG, "ldpi");
+            mTabMarginLeft = -11;
+            mTabMarginRight = 0;
+            mHomeBtnPadding = 10;
+        }
+
+        setMainContentView();
+        
+        if(mNavigationBar != null){
+            mNavigationBar.setVerticalScrollBarEnabled(false);
+            mNavigationBar.setHorizontalScrollBarEnabled(false);
+        }
+
+        // create a tab name list to hold tab name
+        mTabNameList = new ArrayList<String>();
+
+        // set up navigation history instance
+        mNavHistory = new NavigationHistory();
+
+        // set up a list view
+        mListView = (ListView) findViewById(R.id.list_view);
+        mListView.setEmptyView(findViewById(R.id.empty_view));
+        mListView.setOnItemClickListener(this);
+        mListView.setFastScrollEnabled(true);
+        mListView.setVerticalScrollBarEnabled(false);
+
+        mFileInfoList = new ArrayList<FileInfo>();
+        mPreveFileInfoList = new ArrayList<FileInfo>();
+
+        mAdapter = new FileInfoAdapter(this, mFileInfoList, mDrmManagerClient, mCurrentDirPath);
+        mListView.setAdapter(mAdapter);
+        invalidateOptionsMenu();
+    }
+
+    /**
+     * This method is called when the activity is about to become visible
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FileManagerLog.d(TAG, "onStart");
+        if (mReceiver == null) {
+            startWatchingExternalStorage();
+        }
+    }
+
+    /**
+     * This method is left for its children class to set main layout
+     */
+    protected abstract void setMainContentView();
+
+    /**
+     * This method is called when the activity becomes visible
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mInForeground = true;
+
+        if (OptionsUtil.isDrmSupported()) {
+            // Force the mListView to update DRM Files's ICON. The DRM files may be expired.
+            mAdapter.notifyDataSetChanged();
+        }
+
+        if (!mMountPointHelper.isFileRootMount(mCurrentDirPath)) {
+            if (!TextUtils.isEmpty(mCurrentDirPath)
+                    && !MountPointHelper.ROOT_PATH.equals(mCurrentDirPath)) {
+                final String mountPoint = mMountPointHelper.getRealMountPointPath(mCurrentDirPath);
+                String msg = getResources().getString(R.string.unmounted, mMountPointHelper.getMountPointDescription(mountPoint));
+                FileManagerLog.w(TAG, "onResume()," + mCurrentDirPath + " mountpoint is unmounted");
+                EditUtility.showToast(this, msg);
+            }
+            // show root path
+            mCurrentDirPath = MountPointHelper.ROOT_PATH;
+        }
+
+        if (!isBusyForLoadingTask()) {
+            updateCurrentDirFileList();
+        }
+    }
+
+    /**
+     * The method updates the list view if need
+     */
+    protected void updateCurrentDirFileList() {
+        File dir = new File(mCurrentDirPath);
+        long dirModifiedTime = dir.lastModified();
+        if (dirModifiedTime != mCurrentDirModifiedTime) {
+            showDirectoryContent(mCurrentDirPath);
+        }
+    }
+
+    /**
+     * This method is called to save state before onStop() is called
+     */
+    @Override
+    protected void onPause() {
+        FileManagerLog.d(TAG, "onPause");
+        super.onPause();
+    }
+
+    /**
+     * This method is called to save state before onStop() is called
+     * @param outState the bundle contains the data it supply
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        FileManagerLog.d(TAG, "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+    }
+
+    /**
+     * This method is called when the activity is no longer visible
+     */
+    @Override
+    protected void onStop() {
+        FileManagerLog.d(TAG, "onStop");
+        mInForeground = false;
+        super.onStop();
+    }
+
+    /**
+     * This method is called when the activity is being destroyed.
+     */
+    @Override
+    protected void onDestroy() {
+        FileManagerLog.d(TAG, "onDestroy");
+        if (isBusyForLoadingTask()) {
+            boolean cancleResult = mLoadListViewTask.cancel(true);
+            FileManagerLog.i(TAG, "Cancel LoadListViewTask result: " + cancleResult);
+        }
+
+        dismissLoadingDialog();
+        stopWatchingExternalStorage();
+        super.onDestroy();
+    }
+
+    /**
+     * Invoked when the device configuration changes
+     * @param newConfig the new device configuration.
+     */
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // update String when system language is changed.
+        if (!newConfig.locale.equals(mLocale)) {
+            TextView empty = ((TextView) mListView.getEmptyView());
+            if (empty != null) {
+                empty.setText(R.string.empty_msg);
+            }
+
+            mLocale = newConfig.locale;
+
+            mMountPointHelper.updateMountedPointList();
+            if (mCurrentDirPath.equals(MountPointHelper.ROOT_PATH)) {
+                fileInfoListExchangeAndClear();
+                List<FileInfo> mountPoints = mMountPointHelper.getMountPointFileInfo();
+                if (mountPoints != null && !mountPoints.isEmpty()) {
+                    for (FileInfo info : mountPoints) {
+                        if (info != null) {
+                            mFileInfoList.add(info);
+                        }
+                    }
+                }
+                ListAdapter adapter = mListView.getAdapter();
+                if (adapter != null && adapter instanceof BaseAdapter) {
+                    ((BaseAdapter) adapter).notifyDataSetChanged();
+                }
+            } else {
+                if (mTabsHolder.getChildCount() >= 2) { // update Tab String
+                    Button btn = (Button) mTabsHolder.getChildAt(1);
+                    String name = mTabNameList.get(1);
+                    List<FileInfo> mountPoints = mMountPointHelper.getMountPointFileInfo();
+                    if (mountPoints != null && !mountPoints.isEmpty()) {
+                        for (FileInfo info : mountPoints) {
+                            if (info != null && info.getFileName().equals(name)) {
+                                btn.setText(info.getFileDescription());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * This method is called when the activity is finished and returned to the calling activity.
+     */
+    @Override
+    public void finish() {
+        FileManagerLog.d(TAG, "onFinish");
+        if (INSTRUMENTATION_DEBUG) {
+            if (mWakeLock != null && mWakeLock.isHeld()) {
+                mWakeLock.release();
+            }
+        }
+        super.finish();
+    }
+
+    /**
+     * This method starts watching external storage status
+     */
+    private void startWatchingExternalStorage() {
+        FileManagerLog.d(TAG, "Register broadcast receiver");
+        mReceiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context arg0, Intent intent) {
+                String action = intent.getAction();
+                FileManagerLog.d(TAG, "Receive intent: " + action);
+                onBroadcastReceive(intent);
+            }
+        };
+
+        // register action media mounted
+        IntentFilter mountedFilter = new IntentFilter();
+        //add by xueweili for get sdcard
+        mountedFilter.setPriority(1000);
+        
+        mountedFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+        mountedFilter.addDataScheme("file");
+        registerReceiver(mReceiver, mountedFilter);
+
+        // originally register action media eject
+        // change to action unmounted because cannot receive eject intent
+        // when sdcard2 is hot ejected.
+        IntentFilter ejectFilter = new IntentFilter();
+        ejectFilter.setPriority(1000);
+        ejectFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
+        ejectFilter.addDataScheme("file");
+        registerReceiver(mReceiver, ejectFilter);
+    }
+
+    /**
+     * This method receives broadcast intents and performs the actions respectively
+     * @param intent the received intent
+     */
+    protected void onBroadcastReceive(Intent intent) {
+        boolean reset = false;
+        String action = intent.getAction();
+        Uri mountPointUri = intent.getData();
+        String mountPoint = null;
+        if (mountPointUri != null) {
+            mountPoint = mountPointUri.getPath();
+        }
+        FileManagerLog.w(TAG, "onBroadcasteReceive: " + action + "; dat: " + mountPoint);
+
+        prepareForMediaEventHandle(action);
+
+        if (mountPoint == null) {
+            return;
+        }
+
+        updateViewCompomentStateForMediaEvent(action, mountPoint);
+
+        mMountPointHelper.updateMountedPointList();
+
+        if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
+            // TODO if the current path is mounted, change to root path
+            if (MountPointHelper.ROOT_PATH.equals(mCurrentDirPath)) {
+                showDirectoryContent(mCurrentDirPath);
+                closeContextMenu();
+            }
+        } else {
+            FileManagerLog.i(TAG, "onReceive unmounted: " + mountPoint);
+            // TODO if the current path is unmounted, change to root path
+            if (mCurrentDirPath.startsWith(mountPoint + MountPointHelper.SEPARATOR) || mCurrentDirPath.equals(mountPoint)
+                    || mCurrentDirPath.equals(MountPointHelper.SEPARATOR)) {
+                returnToRootPointForUnmount(mountPoint);
+                showToastForUnmountCurrentSDCard(mountPoint);
+                showDirectoryContent(mCurrentDirPath);
+                closeContextMenu();
+            }
+        }
+    }
+
+    protected abstract void prepareForMediaEventHandle(String action);
+
+    protected abstract void updateViewCompomentStateForMediaEvent(String action, String mountPoint);
+
+    protected void returnToRootPointForUnmount(String path) {
+        updateNavigationBar(0); // should remain only sdcard and
+        // sdcard2 tabs
+        clearNavigationList();
+        EditUtility.setLastOperation(EditUtility.NO_OPERATION);
+    }
+
+    protected void showToastForUnmountCurrentSDCard(String path) {
+        if (mInForeground) {
+            String[] folderNames = path.split(MountPointHelper.SEPARATOR);
+            String mountPointFolderName = folderNames[folderNames.length - 1];
+            String msg = mResources.getString(R.string.unmounted, mMountPointHelper.getMountPointDescription(mountPointFolderName));
+            EditUtility.showToast(this, msg);
+        }
+    }
+
+    /**
+     * This method stop watching external storage status
+     */
+    private void stopWatchingExternalStorage() {
+        FileManagerLog.d(TAG, "Unregister broadcast receiver");
+        unregisterReceiver(mReceiver);
+    }
+
+    /**
+     * This method add a path into navigation history list
+     * @param dirPath the path that should be added
+     */
+    protected void addToNavigationList(String dirPath, String focusedItemFilename, int top) {
+        mNavHistory.addToNavigationList(new NavigationRecord(dirPath, focusedItemFilename, top));
+    }
+
+    /**
+     * This method clear navigation history list
+     */
+    protected void clearNavigationList() {
+        mNavHistory.clearNavigationList();
+    }
+
+    /**
+     * This method creates tabs on the navigation bar
+     * @param text the name of the tab
+     */
+    //modify by tyd liuyong 20140807 for addTab
+    protected void addTab(String text) {
+        LinearLayout.LayoutParams mlp;
+        ++mTabsCounter;
+     /*/modify by tyd liuyong 20140807
+        if (mBlankTab == null) {
+            mBlankTab = new Button(this);
+            mBlankTab.setBackgroundDrawable(mResources.getDrawable(R.drawable.secondary_title_background));
+        } else {
+            mTabsHolder.removeView(mBlankTab);
+        }
+     //*/
+        String description = text;
+        if (mTabsCounter == 1) {
+            description = mMountPointHelper.getMountPointDescription(text);
+        }
+        // set button style
+        if (mTabsCounter == 0) {
+            ImageButton btn = new ImageButton(this);
+            btn.setId(mTabsCounter);
+
+            mlp = new LinearLayout.LayoutParams(new ViewGroup.MarginLayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            mlp.setMargins(0, 0, 0, 0);
+            btn.setLayoutParams(mlp);
+            btn.setOnClickListener(this);
+
+            // add button to the tab holder
+            mTabsHolder.addView(btn);
+        } else {
+            Button btn = new Button(this);
+            btn.setId(mTabsCounter);
+            btn.setTextColor(Color.BLACK);
+            btn.setBackgroundDrawable(mResources.getDrawable(R.drawable.path_gallery_item_bg));
+
+            if (text.length() <= TAB_TEXT_LENGTH) {
+                btn.setText(description);
+            } else {
+                btn.setText(description.substring(0, TAB_TEXT_LENGTH));
+            }
+
+            mlp = new LinearLayout.LayoutParams(new ViewGroup.MarginLayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            mlp.setMargins(0, 0, 0, 0);
+            btn.setLayoutParams(mlp);
+            btn.setOnClickListener(this);
+
+            // add button to the tab holder
+            mTabsHolder.addView(btn);
+        }
+
+        mTabNameList.add(text);
+
+        mCurrentDirPath = mCurrentDirPath + MountPointHelper.SEPARATOR + text;
+        /*/modify by tyd liuyong 20140807 
+        // add blank tab to the tab holder
+        mlp = new LinearLayout.LayoutParams(new ViewGroup.MarginLayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+
+        mlp.setMargins(0, 0, 0, 0);
+        mBlankTab.setLayoutParams(mlp);
+        mTabsHolder.addView(mBlankTab);
+         //*/
+        // scroll horizontal view to the right
+        mNavigationBar.postDelayed(new Runnable() {
+            public void run() {
+                mNavigationBar.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+            }
+        }, NAV_BAR_AUTO_SCROLL_DELAY);
+    }
+
+    /**
+     * This method updates the navigation view to the previous view when back button is pressed
+     * @param path the previous showed directory in the navigation history
+     */
+    private void showPrevNavigationView(String path) {
+        FileManagerLog.d(TAG, "Show previous navigation view: " + path);
+        // remove all tabs
+        int count = mTabsHolder.getChildCount();
+        mTabsHolder.removeViews(0, count);
+        mTabsCounter = -1;
+
+        // update mTabNameList
+        mTabNameList.clear();
+
+        // reset mCurrentPath
+        mCurrentDirPath = "";
+
+        if (new File(path).exists()) {
+            String[] result = path.split(MountPointHelper.SEPARATOR);
+            for (int i = NUM_FIRST_VALID_FOLDER; i < result.length; i++) { // i=1 to skip first
+                // empty string and "/"
+                addTab(result[i]);
+            }
+        } else {
+            addTab(MountPointHelper.ROOT);
+        }
+
+        updateHomeButton();
+
+        showDirectoryContent(mCurrentDirPath);
+    }
+
+    private int restoreSelectedPosition() {
+        if (mSelectedFileName == null) {
+            return -1;
+        } else {
+            int curSelectedItemPosition = -1;
+            for (curSelectedItemPosition = 0; curSelectedItemPosition < mFileInfoList.size(); curSelectedItemPosition++) {
+                if (mSelectedFileName.equals(mFileInfoList.get(curSelectedItemPosition)
+                        .getFileName())) {
+                    mSelectedFileName = null;
+                    FileManagerLog.d(TAG, "curSelectedItemPosition: " + curSelectedItemPosition);
+                    return curSelectedItemPosition;
+                }
+            }
+            mSelectedFileName = null;
+            return -1;
+        }
+    }
+    //modify by tyd liuyong 20140807 for updateHomeButton()
+    protected void updateHomeButton() {
+        ImageButton homeBtn = (ImageButton) mTabsHolder.getChildAt(0);
+        if (mTabsHolder.getChildCount() == 2) { // two tabs: home tab + blank tab
+            homeBtn.setBackgroundDrawable(mResources
+                    .getDrawable(R.drawable.path_gallery_first_item_bg));
+            homeBtn.setImageDrawable(mResources.getDrawable(R.drawable.ic_home_text));
+            homeBtn.setPadding(0, 0, 10, 0);
+        } else {
+            homeBtn.setBackgroundDrawable(mResources
+                    .getDrawable(R.drawable.path_gallery_first_item_bg));
+            homeBtn.setImageDrawable(mResources.getDrawable(R.drawable.ic_home));
+        }
+    }
+
+    /**
+     * The method updates the navigation bar
+     * @param id the tab id that was clicked
+     */
+    protected void updateNavigationBar(int id) {
+        if (id < mTabsCounter) {
+            int count = mTabsCounter - id;
+            mTabsHolder.removeViews(id + 1, count);
+            mTabsCounter = id;
+
+            // update mTabNameList
+            for (int i = 0; i < count; i++) {
+                mTabNameList.remove(mTabNameList.size() - 1);
+            }
+
+            // update mCurrentPath
+            mCurrentDirPath = "";
+            for (String str : mTabNameList) {
+                mCurrentDirPath = mCurrentDirPath + MountPointHelper.SEPARATOR + str;
+            }
+        }
+
+        updateHomeButton();
+    }
+
+    protected void fileInfoListExchangeAndClear() {
+        List<FileInfo> tmpFileInfoList = mPreveFileInfoList;
+        mPreveFileInfoList = mFileInfoList;
+        mFileInfoList = tmpFileInfoList;
+        mFileInfoList.clear();
+    }
+
+    /**
+     * This method gets all files/folders from a directory and displays them in the list view
+     * @param dirPath the directory path
+     */
+    protected void showDirectoryContent(String dirPath) {
+        FileManagerLog.d(TAG, "Get files/folders in the directory " + dirPath);
+        if (isFinishing()) {
+            FileManagerLog.d(TAG, "isFinishing: true, do not loading again");
+            return;
+        }
+        if (isBusyForLoadingTask()) {
+            return;
+        }
+        mLoadListViewTask = new LoadListViewTask(dirPath);
+        mLoadListViewTask.execute();
+    }
+
+    /**
+     * This method save the selection of list view on present screen
+     */
+    protected void saveLastSelection() {
+        mSelection = mListView.getFirstVisiblePosition(); // save current visible position
+    }
+
+    /**
+     * This method restore the selection saved before
+     */
+    protected void restoreLastSelection() {
+        if (mSelection != -1) {
+            mListView.setSelection(mSelection);
+        }
+        mSelection = -1;
+        
+    }
+
+    /**
+     * This method loads all files/folders from a directory
+     * @param files the array of files to load
+     */
+    protected abstract void loadFileInfoList(File[] files);
+
+    /**
+     * A callback method to be invoked when a tab on the navigation bar has been clicked
+     * @param view the tab view that was clicked
+     */
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        FileManagerLog.d(TAG, "onClick: " + id);
+        if (isBusyForLoadingTask()) {
+            return;
+        }
+
+        if (id < mTabsCounter) {
+            String focusedItemFileName = null;
+            int top = -1;
+            if (!mFileInfoList.isEmpty()) {
+                focusedItemFileName = mFileInfoList.get(mListView.getFirstVisiblePosition())
+                        .getFileName();
+                top = mListView.getChildAt(0).getTop();
+            }
+            addToNavigationList(mCurrentDirPath, focusedItemFileName, top);
+            updateNavigationBar(id);
+            showDirectoryContent(mCurrentDirPath);
+        }
+    }
+
+    /**
+     * A callback method to be invoked when a key is pressed
+     * @param keyCode a key code that represents the button pressed
+     * @param event the KeyEvent object that defines the button action
+     * @return true if the callback consumed the press, false otherwise
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        FileManagerLog.d(TAG, "onKeyDown: " + keyCode);
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (MountPointHelper.ROOT_PATH.equals(mCurrentDirPath)) {
+                return super.onKeyDown(keyCode, event);
+            } else {
+                NavigationRecord navRecord = mNavHistory.getPrevNavigation();
+                String prevPath = null;
+                if (navRecord != null) {
+                    prevPath = navRecord.getNavigationDirPath();
+                    mSelectedFileName = navRecord.getFocusedFileName();
+                    mTop = navRecord.getTop();
+                } else {
+                    prevPath = new File(mCurrentDirPath).getParent();
+                }
+                if (prevPath != null) {
+                    showPrevNavigationView(prevPath);
+                    return true;
+                }
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    /**
+     * This method shows loading dialog
+     */
+    protected void showLoadingDialog() {
+        if (mLoadingDialog == null) {
+            mLoadingDialog = ProgressDialog.show(FileManagerBaseActivity.this, "", mResources
+                    .getString(R.string.loading)
+                    + "...", true);
+        }
+        if (!mLoadingDialog.isShowing()) {
+            mLoadingDialog.show();
+        }
+    }
+
+    /**
+     * This method dismiss loading dialog
+     */
+    protected void dismissLoadingDialog() {
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss();
+            mLoadingDialog = null;
+        }
+    }
+
+    /**
+     * This method gets the current directory path
+     * @return current directory path
+     */
+    public String getCurrentDirPath() {
+        return mCurrentDirPath;
+    }
+
+    /**
+     * This method gets the lading dialog
+     * @return loading dialog
+     */
+    public Dialog getLoadingDialog() {
+        return mLoadingDialog;
+    }
+
+    public class LoadListViewTask extends AsyncTask<Void, Object, Void> {
+        private final String mDirPath;
+        /** start time of showing LoadingDialog */
+        private long mDialogStartTime = 0;
+
+        /**
+         * The constructor to construct a background thread for loading list view
+         * @param files the array of files to be loaded in the list view
+         */
+        LoadListViewTask(String dirPath) {
+            mDirPath = dirPath;
+            mDialogStartTime = 0;
+        }
+
+        /*
+         * A callback method to be invoked before the background thread starts running
+         */
+        @Override
+        protected void onPreExecute() {
+            mDialogStartTime = System.currentTimeMillis();
+            FileManagerLog.d(TAG, "onPreExecute loading list view");
+            mHandler.removeMessages(MSG_DIALOG_CLOSE);
+            showLoadingDialog();
+        }
+
+        /**
+         * A callback method to be invoked when the background thread starts running
+         * @param arg0 the method need not parameters here
+         * @return null, the background thread need not return anything
+         */
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            fileInfoListExchangeAndClear();
+            File[] files = null;
+            if (mDirPath.equals(MountPointHelper.ROOT_PATH)) {
+                List<FileInfo> mountFileInfos = mMountPointHelper.getMountPointFileInfo();
+                if (mountFileInfos != null && !mountFileInfos.isEmpty()) {
+                    for (FileInfo info : mountFileInfos) {
+                        if (info != null) {
+                            mFileInfoList.add(info);
+                        }
+                    }
+                }
+            } else {
+                File dir = new File(mDirPath);
+                mCurrentDirModifiedTime = dir.lastModified();
+                files = dir.listFiles();
+                if (files != null) {
+                    loadFileInfoList(files);
+                }
+            }
+            // sort files
+            FileManagerLog.d(TAG, "Sort by: " + mSortBy);
+            Collections.sort(mFileInfoList, new FileInfoComparator(mSortBy));
+            FileManagerLog.d(TAG, "Display folder end time: " + System.currentTimeMillis());
+            return null;
+        }
+
+        /**
+         * A callback method to be invoked after the background thread performs the task
+         * @param result the value returned by doInBackground(), but it is not needed here
+         */
+        @Override
+        protected void onPostExecute(Void result) {
+            FileManagerLog.e(TAG, "onPostExecute loading : " + mFileInfoList.size());
+            mAdapter.updateCurrentPath(mCurrentDirPath, mFileInfoList);
+            int seletedItemPosition = restoreSelectedPosition();
+            if (seletedItemPosition >= 0 && seletedItemPosition < mFileInfoList.size()) {
+                if (mTop == -1) {
+                    mListView.setSelection(seletedItemPosition);
+                } else {
+                    mListView.setSelectionFromTop(seletedItemPosition, mTop);
+                    mTop = -1;
+                }
+            }
+            //*/[tyd00436243]yphuang add for start at first while entry dir not in history
+            else{
+                mListView.setSelection(0);
+            }
+            //*/
+            invalidateOptionsMenu();
+
+            final long delayMillis = MINTIME_DIALOGSHOW + mDialogStartTime
+                    - System.currentTimeMillis();
+            if (delayMillis > 0) {
+                FileManagerLog.e(TAG, "onPostExecute loadingTask ->delayMillis : "+delayMillis);
+                Message msg = mHandler.obtainMessage();
+                msg.what = MSG_DIALOG_CLOSE;
+                mHandler.sendMessageDelayed(msg, delayMillis);
+            } else {
+                FileManagerLog.e(TAG, "onPostExecute loadingTask ->dismissLoadingDialog : ");
+                dismissLoadingDialog();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            FileManagerLog.e(TAG, "onCancelled() loadingTask ->dismissLoadingDialog ");
+            dismissLoadingDialog();
+        }
+    }
+
+    protected boolean isBusyForLoadingTask() {
+        if (mLoadListViewTask != null && !mLoadListViewTask.isCancelled()) {
+            if (mLoadListViewTask.getStatus() == AsyncTask.Status.PENDING
+                    || mLoadListViewTask.getStatus() == AsyncTask.Status.RUNNING) {
+                FileManagerLog.w(TAG, "mLoadListViewTask is running.");
+                return true;
+            }
+        }
+        return false;
+    }
+}

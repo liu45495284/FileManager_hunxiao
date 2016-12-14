@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/filemanager_notification_clean"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="12dip"/>
+
+    <LinearLayout
+        android:id="@+id/ll_custom_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dip"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/rl_custom_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="12dp">
+        <ImageButton
+            android:id="@+id/btn_custom"
+            style="@style/btn_custom_style"
+            android:contentDescription="@string/click_clean"
+            android:background="@drawable/button_click_clean" 
+            />
+        <TextView
+            android:id="@+id/tv_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/click_clean"
+            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
+            android:textColor="#7aae49"/>
+            
+    </RelativeLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="16dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginTop="5dip"
+        android:layout_toLeftOf="@id/ll_custom_button"
+        android:layout_toRightOf="@id/filemanager_notification_clean"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tv_custom_title"
+            style="@style/NotificationTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="5dip"
+            android:layout_marginLeft="7dip"
+            android:textSize="15sp"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/tv_custom_text"
+            style="@style/NotificationContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="10dip"
+            android:layout_marginLeft="7dip"
+            android:textSize="14sp"
+            android:textColor="#606060"
+            android:singleLine="true"/>
+    </RelativeLayout>
+    
+
+</RelativeLayout>

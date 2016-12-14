@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rename_layout"
+    android:orientation="vertical"
+    android:layout_width="260dp"
+    android:layout_height="68dp"
+    android:gravity="center">
+    <View 
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"/>
+        <EditText 
+            android:id="@+id/rename_text"
+            android:layout_width="245dp"
+            android:layout_height="58dp"
+            android:singleLine="true"
+            android:maxLength="255"
+            android:inputType="textNoSuggestions"/>
+</LinearLayout>

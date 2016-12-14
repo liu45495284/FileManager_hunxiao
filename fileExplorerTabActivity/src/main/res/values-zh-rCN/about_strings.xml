@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <string name="freemeabout">关于</string>
+        <string name="freemeabout_current_version">当前版本</string>
+        <string name="freemeabout_official_website">官方网址</string>
+        <string name="freemeabout_official_forum">官方论坛</string>
+        <string name="freemeabout_official_website_value">www.freemeos.com</string>
+        <string name="freemeabout_official_forum_value">http://bbs.droi.com</string>
+        <string name="freemeabout_copy_right">上海卓易科技股份有限公司版权所有</string>
+        <string name="freemeabout_droi">Copyright©2016, Droi .All Rights Reserved</string>
+        <string name="freemeabout_detail_msg">详细信息</string>
+        <string name="freemeabout_channel_number">渠道号</string>
+        <string name="freemeabout_customer_number">客户号</string>
+        <string name="freemeabout_click_times">还需点击</string>
+        <string name="freemeabout_click_intent">次将会为您跳转到详细信息界面</string>
+</resources>

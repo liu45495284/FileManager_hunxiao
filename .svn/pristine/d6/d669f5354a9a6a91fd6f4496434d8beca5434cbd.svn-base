@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/flie_item_line_height"
+    android:paddingTop="5dip"
+    android:paddingBottom="5dip"
+    android:paddingLeft="10dip"
+    android:paddingRight="10dip" >
+
+    <RelativeLayout
+        android:id="@+id/picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical" >
+
+        <CheckBox
+            android:id="@+id/group_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/checkbox_style"
+            android:focusable="false" />
+
+        <ProgressBar
+            android:id="@+id/group_progress"
+            style="@android:attr/progressBarStyleLarge"
+            android:layout_width="25.0dip"
+            android:layout_height="25.0dip"
+            android:focusable="false"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/finish_view"
+            android:layout_width="@dimen/garbage_finish_view_width"
+            android:layout_height="@dimen/garbage_finish_view_height"
+            android:background="@drawable/btn_radio_to_off_mtrl_000"
+            android:focusable="false"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/group_item"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="0.0dip"
+        android:layout_toLeftOf="@id/picker" >
+
+        <RelativeLayout
+            android:id="@+id/group_item_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/group_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textAppearance="?android:textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/group_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/group_name"
+                android:singleLine="true"
+                android:textColor="@color/file_detail_text_color"
+                android:textAppearance="?android:textAppearanceSmall" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/group_image"
+            android:layout_width="@dimen/garbage_group_image_width"
+            android:layout_height="@dimen/garbage_group_image_height"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5.0dip"
+            android:layout_toRightOf="@id/group_item_info"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+</RelativeLayout>

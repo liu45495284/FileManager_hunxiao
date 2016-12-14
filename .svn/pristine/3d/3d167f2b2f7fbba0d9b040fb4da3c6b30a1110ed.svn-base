@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="flie_item_line_height">64px</dimen>
+    <dimen name="path_gallery_line_height">64px</dimen>
+    <dimen name="storage_volume_item_line_height">100px</dimen>
+    <dimen name="storage_volume_item_icon_paddingleft">10dip</dimen>
+    <dimen name="storage_volume_item_icon_paddingright">10dip</dimen>
+
+    <dimen name="garbage_finish_view_width">32.0dip</dimen>
+    <dimen name="garbage_finish_view_height">32.0dip</dimen>
+    <dimen name="garbage_group_image_width">36px</dimen>
+    <dimen name="garbage_group_image_height">36px</dimen>
+
+    <dimen name="edit_adapter_img_width">96px</dimen>
+    <dimen name="edit_adapter_img_height">96px</dimen>
+
+    <dimen name="start_stop_button_width">340px</dimen>
+
+    <dimen name="dividing_line">0.5dp</dimen>
+
+
+    <!-- add by droi mingjun on 20160108 -->
+    <dimen name="round_info_top">15dp</dimen>
+    <dimen name="roundWidthLarge">1dp</dimen>
+    <dimen name="roundWidthSmall">6dp</dimen>
+    <dimen name="menorycardLeft">30dp</dimen>
+    <dimen name="menorysdcardLeft">177dp</dimen>
+    <dimen name="sdpercentLeft">238dp</dimen>
+    <dimen name="moneyinfo_roundprogressbar">195dp</dimen>
+    <dimen name="explore_category_roundprogressbar">135dip</dimen>
+    <dimen name="explore_category_roundprogressbar_height">130dip</dimen>
+    <dimen name="info_memory_top">100dp</dimen>
+     <dimen name="info_available_top">80dp</dimen>
+    <dimen name="CategoryButtonStylesmall_layout_height">80dp</dimen>  
+    <dimen name="roundprogressbar_startPosition">90dp</dimen>
+    <dimen name="explore_layout_height">110dp</dimen>
+    <dimen name="memory_percent_top">32dp</dimen>
+    <dimen name="roundprogressbar_percent_top">52dp</dimen>
+     <dimen name="round_page_text_top">-113dp</dimen>
+    <dimen name="memory_percent_textsize">18dp</dimen>
+    
+    <dimen name="round_Large_dif">14dp</dimen>
+    <dimen name="round_Small_dif">8dp</dimen>
+    <dimen name="round_Large_Width">7dp</dimen>
+    <dimen name="round_Small_Width">4dp</dimen>
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="software_check_update">Проверить обновление</string>
+    <string name="software_auto_check">Включить автоматическое обновление</string>
+    <string name="software_update">Обновление программного обеспечения</string>
+</resources>

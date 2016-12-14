@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="#F7F7F8">
+    <LinearLayout
+        android:id="@+id/layoutone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="125dp"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/wifi_state_image"
+            android:src="@drawable/wifi_state4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layouttwo"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/layoutone"
+        android:gravity="top">
+        <TextView
+            android:id="@+id/instruction_pre"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/instruction_pre"
+            android:visibility="gone"
+            android:textColor="#b9b9b9"
+            style="?android:attr/textAppearanceSmall" />
+        <TextView
+            android:id="@+id/instruction"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/instruction"
+            style="?android:attr/textAppearanceSmall" />
+
+        <!-- modify by tyd liuyong 20140321 for freeme3.0  -->
+        <TextView
+            android:id="@+id/ip_address"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:minWidth="150px"
+            android:layout_gravity="center_horizontal"           
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:textSize="32px"
+            android:gravity="center"
+            android:layout_marginTop="15px"
+            android:paddingLeft="15px"
+            android:paddingRight="15px"
+            android:textColor="#000000" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/start_stop_button"
+        android:layout_height="wrap_content"
+        android:layout_width="@dimen/start_stop_button_width"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_marginBottom="20px"
+        android:background="@drawable/btn_bottom_last">
+        <TextView
+            android:id="@+id/start_stop_button_text"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="#ffffff"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/layouttwo"
+        android:layout_marginTop="64dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="@string/wifi_help_content1" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/layouttwo"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="24dp"
+        android:text="@string/wifi_help_content" />
+
+</RelativeLayout>

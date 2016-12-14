@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="flie_item_line_height">64px</dimen>
+    <dimen name="path_gallery_line_height">64px</dimen>
+    <dimen name="storage_volume_item_line_height">100px</dimen>
+    <dimen name="storage_volume_item_icon_paddingleft">10dip</dimen>
+    <dimen name="storage_volume_item_icon_paddingright">10dip</dimen>
+
+    <dimen name="garbage_finish_view_width">32.0dip</dimen>
+    <dimen name="garbage_finish_view_height">32.0dip</dimen>
+    <dimen name="garbage_group_image_width">36px</dimen>
+    <dimen name="garbage_group_image_height">36px</dimen>
+
+    <dimen name="edit_adapter_img_width">96px</dimen>
+    <dimen name="edit_adapter_img_height">96px</dimen>
+
+    <dimen name="start_stop_button_width">340px</dimen>
+
+    <dimen name="dividing_line">0.5dp</dimen>
+
+
+    <!-- add by droi mingjun on 20160108 -->
+    <dimen name="round_info_top">15dp</dimen>
+    <dimen name="roundWidthLarge">1dp</dimen>
+    <dimen name="roundWidthSmall">6dp</dimen>
+    <dimen name="round_Large_dif">14dp</dimen>
+    <dimen name="round_Small_dif">9dp</dimen>
+    <dimen name="round_Large_Width">7dp</dimen>
+    <dimen name="round_Small_Width">4dp</dimen>
+    <dimen name="menorycardLeft">2dp</dimen>
+    <dimen name="menorysdcardLeft">156dp</dimen>
+    <dimen name="sdpercentLeft">220dp</dimen>
+    <dimen name="moneyinfo_roundprogressbar">195dp</dimen>
+    <dimen name="explore_category_roundprogressbar">140dip</dimen>
+    <dimen name="explore_category_roundprogressbar_height">150dip</dimen>
+     <dimen name="info_available_top">80dp</dimen>
+    <dimen name="CategoryButtonStylesmall_layout_height">90dp</dimen> 
+     <dimen name="roundprogressbar_startPosition">80dp</dimen>
+    <dimen name="explore_layout_height">90dp</dimen> 
+    <dimen name="memory_percent_top">30dp</dimen>
+    <dimen name="roundprogressbar_percent_top">51dp</dimen>
+    <dimen name="memory_percent_textsize">17dp</dimen>
+     <dimen name="category_page_height">445dp</dimen>
+     <dimen name="round_page_text_top">-113dp</dimen>
+     <dimen name="roundprogressbar_Large_percent_top">75dp</dimen>
+     
+     <!-- freeme.liuhaoran , 20160723 , Low version of the adapter  -->
+     <dimen name="sd_percent_top">22dp</dimen>
+     <dimen name="sd_percent_textsize">11.5dp</dimen>
+     <dimen name="roundprogressbar_percent_left">-3dp</dimen>
+</resources>

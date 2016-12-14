@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="updateself_verison_update">Version Update</string>
+    <string name="updateself_verison_name">Version Name:%s</string>
+    <string name="updateself_verison_content">Update Log:%s</string>
+    <string name="updateself_attention">Tips</string>
+    <string name="updateself_network_error">Network error</string>
+    <string name="updateself_download_is_not_wifi">You are downloading update package via mobile network. It is suggested you download via Wi-Fi network. Continue?</string>
+    <string name="updateself_later">Later</string>
+    <string name="updateself_update">Update</string>
+    <string name="updateself_exit">Exit</string>
+    <string name="updateself_try_again">Try Again</string>
+    <string name="updateself_notify_success_congrate">Your version is updated.</string>
+    <string name="updateself_notify_success_arg">%s Updated to latest.</string>
+    <string name="updateself_downloaded">downloaded: %s</string>
+    <string name="updateself_download_use_mobile">current download using mobile network.</string>
+    <string name="updateself_download_connect_error">current connect is eroor, please retry again.</string>
+    <string name="updateself_downloading">Currently is downloading, please do not exit application.</string>
+    <string name="updateself_no_new">This is the latest version</string>
+    
+    <!-- Notification -->
+    <string name="updateself_version_code">New Version: %s</string>
+    <string name="updateself_version_size">Size: %s</string>
+    <string name="updateself_update_right_now">Download</string>
+    <string name="updateself_download_continue">Continue</string>
+    <string name="updateself_download_continue_mobile">downloading update package via mobile network. Continue?</string>
+    <string name="updateself_download_sucessed">%s download complelte, click to install.</string>
+    <string name="updateself_no_enough_space_notice">no enough space to download.</string>
+    <string name="updateself_downloaded_file_error">download file error.</string>
+    <string name="software_check_update">Check for update</string>
+    <string name="software_auto_check">Turn on automatic update</string>
+    <string name="software_update">Software update</string>
+
+</resources>

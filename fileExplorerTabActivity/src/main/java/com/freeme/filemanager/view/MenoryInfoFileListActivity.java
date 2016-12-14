@@ -1,0 +1,623 @@
+package com.freeme.filemanager.view;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+
+import com.freeme.filemanager.FileExplorerTabActivity.HotknotCompleteListener;
+import com.freeme.filemanager.controller.FileListCursorAdapter;
+import com.freeme.filemanager.controller.FileViewInteractionHub;
+import com.freeme.filemanager.controller.FileViewInteractionHub.Mode;
+import com.freeme.filemanager.controller.IActionModeCtr;
+import com.freeme.filemanager.controller.IFileInteractionListener;
+import com.freeme.filemanager.model.FileInfo;
+import com.freeme.filemanager.model.GlobalConsts;
+import com.freeme.filemanager.util.FavoriteDatabaseHelper.FavoriteDatabaseListener;
+import com.freeme.filemanager.util.FeatureOption;
+import com.freeme.filemanager.util.FileCategoryHelper;
+import com.freeme.filemanager.util.FileIconHelper;
+import com.freeme.filemanager.util.FileSortHelper;
+import com.freeme.filemanager.util.Util;
+import com.freeme.filemanager.util.FileCategoryHelper.CategoryInfo;
+import com.freeme.filemanager.util.FileCategoryHelper.FileCategory;
+import com.freeme.filemanager.util.FileSortHelper.SortMethod;
+import com.freeme.filemanager.view.FileCategoryFragment.ViewPage;
+import com.freeme.filemanager.view.FileListItem.ModeCallback;
+import com.freeme.filemanager.view.garbage.GarbageCleanupActivity;
+import com.freeme.filemanager.FileExplorerTabActivity;
+import com.freeme.filemanager.FileExplorerTabActivity.TabsAdapter;
+import com.freeme.filemanager.R;
+
+import android.app.ProgressDialog;
+import android.widget.ActivityChooserView;
+import com.mediatek.hotknot.*;
+import com.umeng.analytics.MobclickAgent;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.Toast;
+
+public class MenoryInfoFileListActivity extends Activity implements
+        IFileInteractionListener, FavoriteDatabaseListener ,IActionModeCtr{
+
+    private FileListCursorAdapter mAdapter;
+    private FileViewInteractionHub mFileViewInteractionHub;
+    private FileIconHelper mFileIconHelper;
+    private String TAG = "MenoryInfoFileListActivity";
+    private Context mContext;
+    private ActionMode mActionMode;
+    private FileCategoryHelper mFileCagetoryHelper;
+    private static final String ROOT_DIR = "/mnt";
+    private HashMap<FileCategory, Integer> categoryIndex = new HashMap<FileCategory, Integer>();
+    private ViewPage curViewPage = ViewPage.Invalid;
+    private ViewPage preViewPage = ViewPage.Invalid;
+    public ViewPage mViewPager;
+    private FavoriteList mFavoriteList;
+    private boolean mNeedRefreshCategoryInfos;
+    private AsyncTask<Void, Void, Cursor> mRefreshFileListTask;
+    private AsyncTask<Void, Void, Object> mRefreshCategoryInfoTask;
+    private boolean mConfigurationChanged = false;
+    TabsAdapter mTabsAdapter;
+    private int isSdcard;
+    private ProgressDialog mProgressDialog;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.menory_info_activity);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayShowHomeEnabled(false);
+        mContext = MenoryInfoFileListActivity.this.getContext();
+        mFileViewInteractionHub = new FileViewInteractionHub(this, 3);
+        mFileViewInteractionHub.setMode(Mode.View);
+        mFileIconHelper = new FileIconHelper(mContext);
+        mAdapter = new FileListCursorAdapter(mContext, null,
+                mFileViewInteractionHub, mFileIconHelper);
+        mFavoriteList = new FavoriteList(mContext,
+                (ListView) findViewById(R.id.favorite_list), this,
+                mFileIconHelper);
+        ListView fileListView = (ListView) findViewById(R.id.file_path_list);
+        fileListView.setAdapter(mAdapter);
+
+        setupCategoryInfo();
+
+        Intent intent = getIntent();
+        FileCategory catrgoryInfo = (FileCategory) intent
+                .getSerializableExtra("category");
+        isSdcard = intent.getIntExtra("category_card", 0);
+        onClickFileCategory(catrgoryInfo);
+        //mFileViewInteractionHub.setRootPath(ROOT_DIR);
+    }
+
+    private void onClickFileCategory(FileCategory f) {
+        if (f != null) {
+            onCategorySelected(f);
+        }
+    }
+
+    private void onCategorySelected(FileCategory fileCategory) {
+        Log.i(TAG, "FileCategory=" + fileCategory);
+        if (mFileCagetoryHelper.getCurCategory() != fileCategory) {
+            Log.i(TAG, "mFileCagetoryHelper=" + mFileCagetoryHelper);
+            mFileCagetoryHelper.setCurCategory(fileCategory);
+            mFileViewInteractionHub.refreshFileList();
+        }
+        mFileViewInteractionHub.setCurrentPath(mFileViewInteractionHub
+                .getRootPath()
+                + "/"
+                + mContext.getString(mFileCagetoryHelper
+                        .getCurCategoryNameResId()));
+    }
+
+
+    private void setupCategoryInfo() {
+        mFileCagetoryHelper = new FileCategoryHelper(mContext);
+
+        // mCategoryBar = (CategoryBar)
+        // mRootView.findViewById(R.id.category_bar);
+        int[] imgs = new int[] { R.drawable.category_bar_music,
+                R.drawable.category_bar_video, R.drawable.category_bar_picture,
+                R.drawable.category_bar_document, R.drawable.category_bar_apk,
+                R.drawable.category_bar_other };
+
+//        for (int i = 0; i < imgs.length; i++) {
+//             mCategoryBar.addCategory(imgs[i]);
+//        }
+
+        for (int i = 0; i < FileCategoryHelper.sCategories.length; i++) {
+            categoryIndex.put(FileCategoryHelper.sCategories[i], i);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menory_info_menu, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.search:
+            mFileViewInteractionHub.onOperationSearch();
+            break;
+        case R.id.selectall:
+            mFileViewInteractionHub.onOperationSelectAllOrCancel();
+            break;
+        case R.id.sort_name:
+                item.setChecked(true);
+                mFileViewInteractionHub.onSortChanged(SortMethod.name);
+                mFileViewInteractionHub.refreshFileList();
+            break;
+        case R.id.sort_date:
+                item.setChecked(true);
+                mFileViewInteractionHub.onSortChanged(SortMethod.date);
+                mFileViewInteractionHub.refreshFileList();
+            break;
+        case R.id.show_hide:
+                mFileViewInteractionHub.onOperationShowSysFiles();
+                item.setTitle(Settings.instance().getShowDotAndHiddenFiles() ? R.string.operation_hide_sysfile
+                        : R.string.operation_show_sysfile);
+            break;
+        case R.id.menu_refresh:
+            mFileViewInteractionHub.onOperationReferesh();
+            break;
+        case R.id.updateself:
+            mFileViewInteractionHub.onOperationUpdate();
+            break;
+        case android.R.id.home:
+            onBackPressed();
+            break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public View getViewById(int id) {
+        return findViewById(id);
+    }
+
+    @Override
+    public Context getContext() {
+        return MenoryInfoFileListActivity.this;
+    }
+
+    @Override
+    public void onDataChanged() {
+        // TODO Auto-generated method stub
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                boolean bool = false;
+                // setCategoryInfo();
+                FileCategory curCategory = mFileCagetoryHelper.getCurCategory();
+                Log.i(TAG, "curCategory=" + curCategory);
+                if (curCategory == FileCategory.Other) {
+                    return;
+                }
+                CategoryInfo categoryInfo = mFileCagetoryHelper
+                        .getCategoryInfos().get(
+                                mFileCagetoryHelper.getCurCategory());
+                mAdapter.notifyDataSetChanged();
+                // modify by tyd sxp 20140910 for showEmptyView Bug
+                if ((categoryInfo == null)
+                        || (mAdapter.getCount() != categoryInfo.count)) {
+                    bool = false;
+                } else if (mAdapter.getCount() == 0) {
+                    bool = true;
+                }
+
+                showEmptyView(bool);
+            }
+        });
+    }
+
+    private void showEmptyView(boolean show) {
+        View emptyView = this.findViewById(R.id.empty_view);
+        if (emptyView != null) {
+            emptyView.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
+    
+    @Override
+    public void onPick(FileInfo f) {
+        // do nothing
+    }
+
+    @Override
+    public boolean shouldShowOperationPane() {
+        return true;
+    }
+
+    @Override
+    public boolean onOperation(int id) {
+        mFileViewInteractionHub.addContextMenuSelectedItem();
+     
+        return false;
+    }
+
+
+    @Override
+    public String getDisplayPath(String path) {
+        String displayPath = getString(R.string.tab_category)
+                + path.substring(ROOT_DIR.length());
+        return displayPath;
+    }
+
+    @Override
+    public String getRealPath(String displayPath) {
+        if (!TextUtils.isEmpty(displayPath)) {
+            if (displayPath.equals(this.getString(R.string.tab_category))) {
+                return ROOT_DIR;
+            }
+        }
+        return displayPath;
+    }
+
+    @Override
+    public boolean shouldHideMenu(int menu) {
+        return (menu == GlobalConsts.MENU_NEW_FOLDER
+                || menu == GlobalConsts.MENU_SEARCH
+                || menu == GlobalConsts.MENU_COMPRESS || menu == GlobalConsts.MENU_PASTE);
+    }
+
+    @Override
+    public void showPathGalleryNavbar(boolean show) {
+        showView(R.id.gallery_navigation_bar, show);
+    }
+
+    @Override
+    public FileIconHelper getFileIconHelper() {
+        return mFileIconHelper;
+    }
+
+    @Override
+    public FileInfo getItem(int pos) {
+        return mAdapter.getFileItem(pos);
+    }
+
+    @Override
+    public void sortCurrentList(FileSortHelper sort) {
+        refreshList();
+    }
+
+    @Override
+    public Collection<FileInfo> getAllFiles() {
+        return mAdapter.getAllFiles();
+    }
+
+    @Override
+    public void addSingleFile(FileInfo file) {
+        refreshList();
+    }
+
+    @Override
+    public boolean onRefreshFileList(String path, final FileSortHelper sort) {
+        // add by droi heqianqian for refresh favoritelist
+        mFavoriteList.initList();
+        // end
+        final FileCategory curCategory = mFileCagetoryHelper.getCurCategory();
+        if (curCategory == FileCategory.All) {
+            return false;
+        }
+
+        mRefreshFileListTask = new AsyncTask<Void, Void, Cursor>() {
+            @Override
+            protected void onPreExecute() {
+
+                showEmptyView(false);
+
+                if(mProgressDialog == null) {
+                    mProgressDialog = new ProgressDialog(mContext);
+                    Log.i("liuhaoran", "mProgressDialog1 =" + mProgressDialog.toString());
+                    mProgressDialog.setTitle(getString(R.string.operation_load));
+                    mProgressDialog.setMessage(getString(R.string.operation_loading));
+                    mProgressDialog.setIndeterminate(false);
+                    mProgressDialog.setCancelable(false);
+                }
+                mProgressDialog.show();
+
+
+            }
+            @Override
+            protected Cursor doInBackground(Void... params) {
+                // add by tyd sxp 20140917 for sort
+                mAdapter.setSortHelper(sort);
+                // end
+                return mFileCagetoryHelper.query(curCategory,
+                        sort.getSortMethod(),isSdcard);
+            }
+
+            @Override
+            protected void onPostExecute(Cursor cursor) {
+                if (cursor != null) {
+                    showEmptyView(cursor == null || cursor.getCount() == 0);
+                    mAdapter.changeCursor(cursor);
+                        showView(R.id.file_path_list,true);
+                }
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    Log.i("liuhaoran", "showLoadingProgress.dismiss");
+                    Log.i("liuhaoran" , "mProgressDialog2 =" + mProgressDialog.toString());
+                    mProgressDialog.dismiss();
+                }
+
+                mFileViewInteractionHub.setRefresh(true);
+            }
+
+        };
+
+        mRefreshFileListTask.execute(new Void[0]);
+
+        return true;
+    }
+
+
+
+    public void setNeedRefreshCategoryInfos(boolean paramBoolean) {
+        this.mNeedRefreshCategoryInfos = paramBoolean;
+    }
+
+    @Override
+    public void onRefreshMenu(boolean visible) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return mAdapter.getCount();
+    }
+
+    @Override
+    public void hideVolumesList() {
+        // TODO Auto-generated method stub
+
+    }
+
+    private void showView(int id, boolean show) {
+        View view = this.findViewById(id);
+        if (view != null) {
+            view.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
+
+
+    public void setActionMode(ActionMode actionMode) {
+        mActionMode = actionMode;
+    }
+
+    public ActionMode getActionMode() {
+        return mActionMode;
+    }
+
+
+    private void refreshList() {
+        mFileViewInteractionHub.refreshFileList();
+    }
+
+    // added for HotKnot
+    private HotKnotAdapter mHotKnotAdapter = null;
+    private Uri[] mHotKnotUris = null;
+    private Activity mActivity = null;
+    private boolean mHotKnotEnable = false;
+    private AlertDialog mHotKnotDialog = null;
+    private Toast mHotKnotToast = null;
+    MenuItem mHotKnotItem = null;
+    private HotknotCompleteListener mHotKnotListener = null;
+
+    private void hotKnotInit(Activity activity) {
+        Log.d(TAG, "hotKnotInit");
+        mActivity = activity;
+        mHotKnotAdapter = HotKnotAdapter.getDefaultAdapter(mActivity);
+        if (mHotKnotAdapter == null) {
+            mHotKnotEnable = false;
+            Log.d(TAG,
+                    "hotKnotInit, mHotKnotAdapter is null, disable hotKnot feature");
+            return;
+        }
+        mHotKnotEnable = true;
+        mHotKnotAdapter.setOnHotKnotCompleteCallback(
+                new HotKnotAdapter.OnHotKnotCompleteCallback() {
+                    public void onHotKnotComplete(int reason) {
+                        Log.d(TAG, "onHotKnotComplete reason:" + reason);
+                        mHotKnotAdapter.setHotKnotBeamUris(null, mActivity);
+                        if (mHotKnotListener != null) {
+                            setHotknotCompleteListener(null);
+                            mHotKnotListener.onHotKnotSendComplete();
+                        }
+                    }
+                }, mActivity);
+
+        OnClickListener onClick = new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (DialogInterface.BUTTON_POSITIVE == which) {
+                    Log.d(TAG, "hotKnot start setting");
+                    Intent intent = new Intent(
+                            "mediatek.settings.HOTKNOT_SETTINGS");
+                    startActivity(intent);
+                    dialog.cancel();
+                } else {
+                    Log.d(TAG, "onClick cancel dialog");
+                    dialog.cancel();
+                }
+            }
+
+        };
+        mHotKnotDialog = new AlertDialog.Builder(mActivity)
+                .setMessage(R.string.turn_on_hotknot)
+                .setNegativeButton(android.R.string.cancel, onClick)
+                .setPositiveButton(android.R.string.ok, onClick).create();
+    }
+
+    public boolean hotKnotIsEnable() {
+        if (FeatureOption.MTK_HOTKNOT_SUPPORT && mHotKnotEnable) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void hotKnotSetUris(Uri[] uris) {
+        Log.d(TAG, "hotKnotSetUris");
+        if (uris != null) {
+            for (Uri uri : uris) {
+                Log.d(TAG, "HotKnot uri:" + uri);
+            }
+        }
+        mHotKnotUris = uris;
+    }
+
+    public void hotKnotStart() {
+        Log.d(TAG, "hotKnotStart");
+
+        if (mHotKnotAdapter.isEnabled()) {
+            Log.d(TAG, "hotKnotAdapter is Enable");
+            mHotKnotAdapter.setHotKnotBeamUris(mHotKnotUris, mActivity);
+            if (mHotKnotToast == null)
+                mHotKnotToast = Toast.makeText(mContext,
+                        R.string.hotknot_toast, Toast.LENGTH_SHORT);
+            if (mHotKnotUris == null) {
+                mHotKnotToast.cancel();
+            } else {
+                mHotKnotToast.show();
+            }
+            return;
+        }
+
+        if (mHotKnotDialog != null) {
+            Log.d(TAG, "hotKnotStart show dialog");
+            mHotKnotDialog.show();
+
+            if (mHotKnotListener != null) {
+                setHotknotCompleteListener(null);
+                mHotKnotListener.onHotKnotSendComplete();
+            }
+        } else {
+            Intent intent = new Intent("mediatek.settings.HOTKNOT_SETTINGS");
+            startActivity(intent);
+        }
+    }
+
+    public void hotKnotSend(Uri uri) {
+        Log.d(TAG, "hotKnotSend:" + uri);
+        if (uri == null) {
+            hotKnotSetUris(null);
+            hotKnotStart();
+        } else {
+            Uri uris[] = new Uri[1];
+            uris[0] = uri;
+            hotKnotSetUris(uris);
+            hotKnotStart();
+        }
+    }
+
+    public void hotKnotUpdateMenu(Menu menu, int shareAction, int hotKnotAction) {
+        if (menu == null) {
+            Log.d(TAG, "hotKnotUpdateMenu: menu is null");
+            return;
+        }
+        mHotKnotItem = menu.findItem(hotKnotAction);
+        MenuItem shareItem = menu.findItem(shareAction);
+        boolean enable = hotKnotIsEnable();
+        Log.d(TAG, "hotKnotUpdateMenu, Enable:" + enable);
+
+        if (mHotKnotItem != null && shareItem != null) {
+            mHotKnotItem.setVisible(enable);
+            ((ActivityChooserView) shareItem.getActionView())
+                    .setRecentButtonEnabled(!enable);
+            Log.d(TAG, "hotKnotUpdateMenu, success");
+        }
+    }
+
+    public void hotKnotShowIcon(boolean enable) {
+        if (mHotKnotItem != null && hotKnotIsEnable()) {
+            mHotKnotItem.setEnabled(enable);
+            mHotKnotItem.setVisible(enable);
+            Log.d(TAG, "hotKnotShowIcon:" + enable);
+        }
+    }
+
+    public void hotKnotDismissDialog() {
+        if (mHotKnotDialog != null) {
+            mHotKnotDialog.dismiss();
+        }
+    }
+
+    public static interface HotknotCompleteListener {
+        public void onHotKnotSendComplete();
+    }
+
+    public void setHotknotCompleteListener(HotknotCompleteListener listener) {
+        mHotKnotListener = listener;
+        Log.d(TAG, "setHotknotCompleteListener:" + mHotKnotListener);
+    }
+
+    @Override
+    public void initHotKnot() {
+        // TODO Auto-generated method stub
+        this.hotKnotSend(null);
+        this.setHotknotCompleteListener(null);
+    }
+
+    @Override
+    public void setHotKnot() {
+        // TODO Auto-generated method stub
+        ArrayList<FileInfo> selectedFileList = mFileViewInteractionHub
+                .getSelectedFileList();
+        for (FileInfo f : selectedFileList) {
+            if (!f.IsDir) {
+                Uri contentUri = Uri.parse("file://" + f.filePath);// mCurrentPhoto.getContentUri();//Uri.parse("context:/"+f.filePath);
+                // modify by zhangmingjun
+                // mHotKnotWaitSend = true;
+                setHotknotCompleteListener((HotknotCompleteListener) this);
+                // item.setIcon(R.drawable.ic_hotknot_press);
+                hotKnotSend(contentUri);
+            } else {
+                AlertDialog dialog = new AlertDialog.Builder(mContext)
+                        .setMessage(R.string.error_info_cant_send_folder)
+                        .setPositiveButton(R.string.confirm, null).create();
+                dialog.show();
+                mFileViewInteractionHub.clearSelection();
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void onFavoriteDatabaseChanged() {
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
+}

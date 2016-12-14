@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="software_check_update">अपडेट की जांच हो रही है</string>
+    <string name="software_auto_check">ऑटोमेटिक जांच चालू करें</string>
+    <string name="software_update">सॉफ्टवेयर अपडेट</string>
+</resources>

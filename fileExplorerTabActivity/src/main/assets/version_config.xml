@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Root>
+    <general_config id="0">
+        <!-- isDaMi(是否是大米手机)设置为true，则是此版本是提供给大米的，否则不是，默认为false -->
+        <isDaMi>false</isDaMi>
+        <!-- isFeiMa(是否是飞马手机)设置为true，则是此版本是提供给飞马的，否则不是，默认为false -->
+        <isFeiMa>false</isFeiMa>
+    </general_config>
+</Root>

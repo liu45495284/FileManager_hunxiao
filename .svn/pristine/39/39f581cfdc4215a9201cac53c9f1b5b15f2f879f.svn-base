@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="alert_delete_multiple">These items will be deleted</string>
+    <string name="alert_delete_single">This item will be deleted</string>
+    <string name="already_exists">already exists</string>
+    <string name="app_name">File Manager</string>
+    <string name="cancel">Cancel</string>
+    <string name="copy">Copy</string>
+    <string name="copy_deny">No permission to copy.</string>
+    <string name="create_folder">Create folder</string>
+    <string name="cut">Cut</string>
+    <string name="cut_fail">Failed to cut</string>
+    <string name="cut_deny">No permission to cut</string>
+    <string name="delete">Delete</string>
+    <string name="delete_deny">No permission to delete.</string>
+    <string name="delete_fail">Failed to delete</string>
+    <string name="deleting">Deleting</string>
+    <string name="deselect_all">Deselect all</string>
+    <string name="select_all">Select all</string>
+    <string name="details">Details</string>
+    <string name="done">Done</string>
+    <string name="edit">Edit</string>
+    <string name="empty_msg">(Empty Folder)</string>
+    <string name="executable">Executable</string>
+    <string name="insufficient_memory">Insufficient memory</string>
+    <string name="invalid_empty_name">File or folder name cannot be empty</string>
+    <string name="invalid_file_name">The specified file or folder name is too long,failed to create.</string>
+    <string name="invalid_file_rename">The specified file or folder name is too long,failed to rename.</string>  
+    <string name="send_file_max_size">Share files exceeds the max number of restrictions.</string>  
+    <string name="loading">Loading</string>
+    <string name="modified_time">Modified</string>
+    <string name="name">Name</string>
+    <string name="new_folder">New folder</string>
+    <string name="no">No</string>
+    <string name="ok">OK</string>
+    <string name="paste">Paste</string>
+    <string name="pasting">Pasting</string>
+    <string name="paste_fail">Failed to paste</string>
+    <string name="paste_same_folder">Cannot paste %s to the same directory</string>
+    <string name="readable">Readable</string>
+    <string name="rename">Rename</string>
+    <string name="save">Save</string>
+    <string name="selected">Selected</string>
+    <string name="send_file">Send file</string>
+    <string name="share">Share</string>
+    <string name="size">Size</string>
+    <string name="sort_by">Sort by</string>
+    <string name="support_fail" product="default">This is not supported by phone</string>
+    <string name="wait">Please wait\u2026</string>
+    <string name="writable">Writable</string>
+    <string name="yes">Yes</string>
+    <string name="confirm_rename">Confirm Rename</string>
+    <string name="invalid_char_prompt">You have input invalid character</string>
+    <string name="msg_rename_ext">You are changing the file extension, which
+    may cause the file not to be recognized. Are you sure to do this?</string>
+    <string name="msg_unable_open_file">The file format is not supported.</string>
+    <string-array name="sort_by">
+        <item>Type</item>
+        <item>Name (A - Z)</item>
+        <item>Size (big - small)</item>
+        <item>Time (new - old)</item>
+    </string-array>    
+    
+      <string name="wifi_help_content">Computers and mobile phones need to connect the same WLAN hotspots</string>
+     <string name="wifi_help_content1">The FTP address is not fixed, according to the IP address change.</string>
+    <string name="added_favorite">Added to Favorites</string>
+    <string name="category_all">All</string>
+    <string name="category_apk">APKs</string>
+    <string name="category_document">Docs</string>
+    <string name="category_favorite">Favorites</string>
+    <string name="category_music">Music</string>
+    <string name="category_other">Misc</string>
+    <string name="category_picture">Images</string>
+    <string name="category_video">Videos</string>
+    <string name="confirm_know">OK</string>
+    <string name="category_theme">Theme</string>
+    <string name="category_title">File Manager</string>
+    <string name="category_zip">RAR</string>
+    <string name="error_info_cant_send_folder">Unable to send the folder</string>
+    <string name="fail_to_create_folder">Failed to create the folder, the folder already exists</string>
+    <string name="succeed_to_create_folder">Folder created successfully</string>
+    <string name="fail_to_rename">Failed to rename the file or folder as it already exists</string>
+    <string name="file_info_canread">Readable:</string>
+    <string name="file_info_canwrite">Writable:</string>
+    <string name="file_info_ishidden">Hidden:</string>
+    <string name="file_info_location">Path:</string>
+    <string name="file_info_modified">Modified:</string>
+    <string name="file_info_size">Size:</string>
+    <string name="file_sizes">%d Bytes</string>
+    <string name="file_size">%d Byte</string>
+    <string name="install_failed">Install failed</string>
+    <string name="install_successful">Install successful</string>
+    <string name="instruction">Enter the following address into your FTP Client:</string>
+    <string name="instruction_pre">Start service to enable FTP server</string>
+    <string name="menu_item_search">Search</string>
+    <string name="menu_item_sort">Sort by</string>
+    <string name="menu_item_sort_date">Date</string>
+    <string name="menu_item_sort_name">Name</string>
+    <string name="menu_item_sort_size">Size</string>
+    <string name="menu_item_sort_type">Type</string>
+    <string name="new_folder_name">New folder</string>
+    <string name="no_file">No files</string>
+    <string name="no_wifi">No Wi-Fi network</string>
+    <string name="notif_server_starting">FTP Server started</string>
+    <string name="notif_title">FTP Server</string>
+    <string name="operation_cancel">Cancel</string>
+    <string name="operation_cancel_selectall">Deselect all</string>
+    <string name="operation_copy">Copy</string>
+    <string name="operation_create_folder">New folder</string>
+    <string name="operation_create_folder_message">Enter folder name</string>
+    <string name="operation_delete">Delete</string>
+    <string name="operation_delete_confirm_message">Confirm Deletion?</string>
+    <string name="operation_deleting">Deleting...</string>
+    <string name="operation_favorite">Add to Favorites</string>
+    <string name="operation_info">Details</string>
+    <string name="operation_move">Move</string>
+    <string name="operation_install">Install</string>
+    <string name="operation_moving">Moving...</string>
+    <string name="operation_paste">Paste</string>
+    <string name="operation_pasting">Pasting...</string>
+    <string name="operation_refresh">Refresh</string>
+    <string name="operation_rename">Rename</string>
+    <string name="operation_remove">Remove</string>
+    <string name="operation_rename_message">Enter a new name</string>
+    <string name="operation_selectall">Select all</string>
+    <string name="operation_send">Send</string>
+    <string name="operation_show_sysfile">Show hidden files</string>
+    <string name="operation_hide_sysfile">Hide hidden files</string>
+    <string name="operation_unfavorite">Remove from Favorites</string>
+    <string name="removed_favorite">Removed from Favorites</string>
+    <string name="removed_favorite_first">First, remove from Favorites!</string>
+    <string name="favorite_file_not_exist">Favorite file does not exist!</string>
+    <string name="start_server">Start Service</string>
+    <string name="root_path">View the catalog</string>
+    <string name="stop_server">Stop Service</string>
+    <string name="dialog_select_type">Select file type</string>
+    <string name="dialog_type_text">Text</string>
+    <string name="dialog_type_audio">Audio</string>
+    <string name="dialog_type_video">Video</string>
+    <string name="dialog_type_image">Image</string>
+    <string name="wifi_state">WLAN Status</string>
+    <string name="multi_select_title">Selected <xliff:g id="number">%1$s</xliff:g> items</string>  
+    <string name="favorite_photo">Photo</string> 
+    <string name="favorite_sdcard">Sdcard</string> 
+    <string name="favorite_screen_cap">Koobee screenshot</string>
+    <string name="favorite_ringtone">Ringtone</string>
+    <string name="preference_title">General Settings</string>
+    <string name="pref_primary_folder">Home folder</string>
+    <string name="pref_read_root">Read root</string>
+    <string name="pref_show_real_path">Display real path</string>
+    <string name="default_primary_folder">/mnt</string>
+    <string name="pref_primary_folder_summary">The folder that appears when the app starts, and current value is</string>
+    <string name="pref_show_real_path_summary">Show real path in navigation bar</string>
+    <string name="no_wifi_hint">No Wi-Fi network, press to check WiFi settings</string>
+    <string name="create_hidden_file">File will be hidden if its name starts with \'.\'.</string>
+    
+    <string name="menu_setting">Setting</string>
+    <string name="menu_exit">Exit</string>
+    <string name="confirm">OK</string>
+    <string name="more">More</string>
+    <string name="file_manager">File Manager</string>
+    <string name="ftp_manager">FTP</string>
+    <string name="category_manager">View upon classification</string>
+    <string name="wifi_help">Help</string>
+    <string name="msg_change_name">Operation failed, please use a different name.</string>
+    <string name="msg_create_fail">Failed to create a folder.</string>
+    <string name="unmounted">%1$s is unmounted</string>
+    <string name="tab_category">Categories</string>
+    <string name="tab_remote">FTP</string>
+    <string name="tab_file">Files</string>
+    <string name="warn_invalid_forlder_name">Please input valid folder name.</string>
+    <string name="storage_phone">Phone storage</string>
+    <string name="storage_sd_card">SD card</string>
+    <string name="storage_external_usb">External USB storage</string>
+    <string name="memory_size">Memory:<xliff:g id="memory_total_size">%1$s</xliff:g></string>
+     <string name="memory_available">"Available: "<xliff:g id="memory_available_size">%1$s</xliff:g></string>
+    <string name="sd_card_size">SD card:<xliff:g id="total_size">%1$s</xliff:g></string>
+    <string name="sd_card_available">"Available: "<xliff:g id="available_size">%1$s</xliff:g></string>
+    <string name="usbstorage_size">USB storage:<xliff:g id="usbstorage_total_size">%1$s</xliff:g></string>
+    <string name="usbstorage_available">Space available:<xliff:g id="usbstorage_available_size">%1$s</xliff:g></string>
+    <string name="enable_memory_card">not available</string>
+    <string name="enable_sd_card">not available</string>
+    <string name="file_info_name">Name:</string>
+    <string name="search_empty">No matches</string>
+    <string name="operation_compress">Compress file</string>
+    <string name="operation_compress_invalid_name">Input compress file name</string>
+    <string name="compress_failed_for_exists">Compress failed, destinaton file exists</string>
+    <string name="operation_compressing">Compressing...</string>
+    <string name="operation_decompress">Decompress file</string>
+    <string name="decompress_to_current_dir">Decompress to current dir</string>
+    <string name="operation_load">Load</string>
+    <string name="operation_loading">Loading</string>
+    <string name="decompress_to">Decompress to...</string>
+    <string name="operation_decompressing">Decompressing...</string>
+    <string name="compress_save_location">Save location</string>
+    <string name="decompress_failed_for_exists">Decompress failed, source file error or path exists</string>
+    <string name="dlg_confirm_unmount_sdcard_title">Do you unmount sdcard</string>
+    <string name="dlg_confirm_unmount_usb_storage_title">Do you unmount usb_storage</string>
+    <string name="dlg_confirm_unmount_sdcard_text">"If you unmount the SD card, you currently used some application will stop, and before you reload the SD card, these applications may not be able to use."</string>
+    <string name="dlg_confirm_unmount_usb_storage_text">"If you unmount the SD card, you currently used some application will stop, and before you reload the usb_storage, these applications may not be able to use."</string>
+    <string name="decompress_failed_for_nofress">Decompress failed, for insufficient memory</string>
+    <string name="compress_save_name">File name:</string>
+    <string name="compress_save_format">File format: zip</string>
+    <string name="storage_device_umouonted">Memory is not available</string>
+    <string name="unmount_sdcard_inform_text">"SD card will be unmounted."</string>
+    <string name="dlg_error_unmount_sdcard_text">"Couldn\'t unmount SD card. Try again later."</string>
+    <string name="unmount_usb_storage_inform_text">"USB storage will be unmounted."</string>
+    <string name="dlg_error_unmount_usb_storage_text">"Couldn\'t unmount USB storage. Try again later."</string>
+    <string name="search_hint">Search</string>
+    <string name="search_title">Search file</string>
+    <string name="child_count">%d item</string>
+    <string name="child_item_count">items</string>
+    <string name="empty_folder">Empty folder</string>
+    
+    <!-- Added by tyd wulianghuan 2013-01-09 for garbage clean string -->
+    <string name="garbage_clean_title">Clean</string>
+    <string name="no_folder">No empty folder</string>
+    <string name="no_garbage">No trash</string>
+    <string name="garbage_scanning">Scanning...</string>
+    <string name="start_clean">Start clean</string>
+    <string name="garbage_cleaning">Cleaning</string>
+    <string name="garbage_clean_finish">Finish</string>
+    <string name="garbage_clean_result">Clean finished</string>
+    <string name="no_garbage_result">No trash to clean</string>
+     <string name="file_clean">Trash Clean</string>
+    <!-- tyd -->
+
+    <string name="operation_hotknot">"HotKnot"</string> 
+    <string name="turn_on_hotknot">"HotKnot is OFF. Please turn on HotKnot in Settings"</string>
+    <string name="hotknot_toast">"Please use screen to touch another device."</string>
+    
+    <!-- add by tyd liuyong 20140723 -->
+    <string name="decompress_failed_for_nofile">Decompress failed, for no file</string>    
+    <string name="cancel_option_note">Task cancel running,wait a moment</string>    
+     <!-- add by tyd mingjun 20150528 -->
+    <string name="load_data">now loading...</string>    
+    <string name="interior_info_storage">Phone storage</string>
+    <string name="sd_info_storage">SD card</string>
+    <string name="sd_percent">0%</string>
+     <string name="percent">%</string>
+
+    <!-- add by tyd zhuya 20150528 -->
+    <string name="donot_change_extfromfilename">If you modify the extension,the file maybe unusable</string>
+
+    <!-- add by droi heqianqian 20151218-->
+    <string name="storage_sd">SD</string>
+
+    <!-- add by heqianqian for update -->
+    <string name="update_self_dialog_confirm_btn">Update</string>
+    <string name="update_self_dialog_cancel_btn">Cancel</string>
+    <string name="update_self_forceDialog_title">Version update</string>
+    <string name="update_self_forceDialog_content">For normal use fileManager, must be updated to the new version.</string>
+    <string name="update_self_dialog_title">Version update</string>
+    <string name="update_self_dialog_content">Found the new version, you can click on the update.</string>
+    <string name="update_networktip_title">Data traffic to remind</string>
+    <string name="update_self_networktip_content">Version update will produce more data traffic, whether or not to continue to update (it is recommended to use wifi)?</string>
+    <string name="update_card_networktip_content">Currently used is a data network, will produce data traffic, whether or not to continue?</string>
+    <string name="update_networktip_yes">"Continue"</string>
+    <string name="update_networktip_no">Cancel</string>
+    <string name="activity_not_found">Application not installed</string>
+    
+    <!-- add by droi liuhaoran for add Toast on 20160408 -->
+    <string name="item">Data</string>
+    <string name="pressed_again_exit">Touch again to exit</string>
+    
+    <!-- add by droi liuhaoran on 20160413 -->
+     <string name="fileManager">Trash Clean</string>
+    <string name="clean_text">"Junk files already affect the speed of mobile phone, please clean up in time"</string>
+    <string name="click_clean">Clearing</string>
+    
+    <string name="menoryInfoFileList">File Manager</string>
+    
+    <!-- add by droi liuhaoran on 20160616 -->
+    <string name="app_about">About</string>
+    <string name="need_permission">Please turn on the denied permission</string>
+    <string name="menu_setting_ring">Set as ringing tone</string>
+    <string name="menu_setting_ring_ok">The setting is successful</string>
+</resources>

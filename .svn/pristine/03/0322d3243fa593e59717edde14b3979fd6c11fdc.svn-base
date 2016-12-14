@@ -1,0 +1,252 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Manifest Merging:
+-----------------
+Your project uses libraries that provide manifests, and your Eclipse
+project did not explicitly turn on manifest merging. In Android Gradle
+projects, manifests are always merged (meaning that contents from your
+libraries' manifests will be merged into the app manifest. If you had
+manually copied contents from library manifests into your app manifest
+you may need to remove these for the app to build correctly.
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* Android.mk
+* Android.mk~
+* FreemeUpdate/
+* FreemeUpdate/.classpath
+* FreemeUpdate/.project
+* FreemeUpdate/.settings/
+* FreemeUpdate/.settings/org.eclipse.jdt.core.prefs
+* FreemeUpdate/AndroidManifest.xml
+* FreemeUpdate/assets/
+* FreemeUpdate/assets/cp
+* FreemeUpdate/assets/td
+* FreemeUpdate/bin/
+* FreemeUpdate/bin/AndroidManifest.xml
+* FreemeUpdate/bin/R.txt
+* FreemeUpdate/bin/classes/
+* FreemeUpdate/bin/classes/com/
+* FreemeUpdate/bin/classes/com/freeme/
+* FreemeUpdate/bin/classes/com/freeme/apk/
+* FreemeUpdate/bin/classes/com/freeme/apk/ui/
+* FreemeUpdate/bin/classes/com/freeme/apk/ui/UpdateSettingActivity.class
+* FreemeUpdate/bin/classes/com/freeme/apk/updateself/
+* FreemeUpdate/bin/classes/com/freeme/apk/updateself/BuildConfig.class
+* FreemeUpdate/bin/classes/com/freeme/apk/updateself/R$attr.class
+* FreemeUpdate/bin/classes/com/freeme/apk/updateself/R$color.class
+* FreemeUpdate/bin/classes/com/freeme/apk/updateself/R$dimen.class
+* FreemeUpdate/bin/classes/com/freeme/apk/updateself/R$drawable.class
+* FreemeUpdate/bin/classes/com/freeme/apk/updateself/R$id.class
+* FreemeUpdate/bin/classes/com/freeme/apk/updateself/R$layout.class
+* FreemeUpdate/bin/classes/com/freeme/apk/updateself/R$string.class
+* FreemeUpdate/bin/classes/com/freeme/apk/updateself/R$style.class
+* FreemeUpdate/bin/classes/com/freeme/apk/updateself/R$styleable.class
+* FreemeUpdate/bin/classes/com/freeme/apk/updateself/R$xml.class
+* FreemeUpdate/bin/classes/com/freeme/apk/updateself/R.class
+* FreemeUpdate/bin/classes/com/freeme/apk/view/
+* FreemeUpdate/bin/classes/com/freeme/apk/view/FreemeCheckboxPreference$Listener.class
+* FreemeUpdate/bin/classes/com/freeme/apk/view/FreemeCheckboxPreference.class
+* FreemeUpdate/bin/classes/com/freeme/apk/view/FreemePreference.class
+* FreemeUpdate/bin/classes/com/freeme/apk/view/SlidingSwitch$OnCheckedChangedListener.class
+* FreemeUpdate/bin/classes/com/freeme/apk/view/SlidingSwitch$SlidingHandler.class
+* FreemeUpdate/bin/classes/com/freeme/apk/view/SlidingSwitch.class
+* FreemeUpdate/bin/freemeupdate.jar
+* FreemeUpdate/bin/jarlist.cache
+* FreemeUpdate/bin/res/
+* FreemeUpdate/bin/res/crunch/
+* FreemeUpdate/bin/res/crunch/drawable-hdpi/
+* FreemeUpdate/bin/res/crunch/drawable-hdpi/updateself_ic_notify_small.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/alert_dialog_background.9.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/alert_dialog_button_normal.9.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/alert_dialog_button_press.9.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/alert_dialog_left_button_normal.9.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/alert_dialog_left_button_press.9.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/alert_dialog_right_button_normal.9.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/alert_dialog_right_button_press.9.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/alert_dialog_title_bar.9.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/widget_sliding_btn_frame.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/widget_sliding_btn_mask.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/widget_sliding_btn_off.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/widget_sliding_btn_off_disable.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/widget_sliding_btn_on.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/widget_sliding_btn_on_disable.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/widget_sliding_btn_slider.png
+* FreemeUpdate/bin/res/crunch/drawable-xhdpi/widget_sliding_btn_slider_pressed.png
+* FreemeUpdate/gen/
+* FreemeUpdate/gen/com/
+* FreemeUpdate/gen/com/freeme/
+* FreemeUpdate/gen/com/freeme/apk/
+* FreemeUpdate/gen/com/freeme/apk/updateself/
+* FreemeUpdate/gen/com/freeme/apk/updateself/BuildConfig.java
+* FreemeUpdate/gen/com/freeme/apk/updateself/R.java
+* FreemeUpdate/libs/
+* FreemeUpdate/libs/UpdateSDK-V1.jar
+* FreemeUpdate/libs/android-support-v4.jar
+* FreemeUpdate/project.properties
+* FreemeUpdate/res/
+* FreemeUpdate/res/color/
+* FreemeUpdate/res/color/updateself_notification_button_text.xml
+* FreemeUpdate/res/drawable-hdpi/
+* FreemeUpdate/res/drawable-hdpi/updateself_ic_notify_small.png
+* FreemeUpdate/res/drawable-xhdpi/
+* FreemeUpdate/res/drawable-xhdpi/alert_dialog_background.9.png
+* FreemeUpdate/res/drawable-xhdpi/alert_dialog_button_normal.9.png
+* FreemeUpdate/res/drawable-xhdpi/alert_dialog_button_press.9.png
+* FreemeUpdate/res/drawable-xhdpi/alert_dialog_left_button_normal.9.png
+* FreemeUpdate/res/drawable-xhdpi/alert_dialog_left_button_press.9.png
+* FreemeUpdate/res/drawable-xhdpi/alert_dialog_right_button_normal.9.png
+* FreemeUpdate/res/drawable-xhdpi/alert_dialog_right_button_press.9.png
+* FreemeUpdate/res/drawable-xhdpi/alert_dialog_title_bar.9.png
+* FreemeUpdate/res/drawable-xhdpi/widget_sliding_btn_frame.png
+* FreemeUpdate/res/drawable-xhdpi/widget_sliding_btn_mask.png
+* FreemeUpdate/res/drawable-xhdpi/widget_sliding_btn_off.png
+* FreemeUpdate/res/drawable-xhdpi/widget_sliding_btn_off_disable.png
+* FreemeUpdate/res/drawable-xhdpi/widget_sliding_btn_on.png
+* FreemeUpdate/res/drawable-xhdpi/widget_sliding_btn_on_disable.png
+* FreemeUpdate/res/drawable-xhdpi/widget_sliding_btn_slider.png
+* FreemeUpdate/res/drawable-xhdpi/widget_sliding_btn_slider_pressed.png
+* FreemeUpdate/res/drawable/
+* FreemeUpdate/res/drawable/alert_dialog_button.xml
+* FreemeUpdate/res/drawable/alert_dialog_left_button.xml
+* FreemeUpdate/res/drawable/alert_dialog_right_button.xml
+* FreemeUpdate/res/drawable/common_setting_btn_selector.xml
+* FreemeUpdate/res/drawable/updateself_notification_button_bg.xml
+* FreemeUpdate/res/drawable/updateself_notification_button_bg_normal.xml
+* FreemeUpdate/res/drawable/updateself_notification_button_bg_normal_pressed.xml
+* FreemeUpdate/res/drawable/updateself_notification_icon_legacy_bg.xml
+* FreemeUpdate/res/layout-v14/
+* FreemeUpdate/res/layout-v14/updateself_notification_endbutton.xml
+* FreemeUpdate/res/layout-v16/
+* FreemeUpdate/res/layout-v16/updateself_notification_endbutton.xml
+* FreemeUpdate/res/layout/
+* FreemeUpdate/res/layout/common_dialog.xml
+* FreemeUpdate/res/layout/common_dialog_singlechoice.xml
+* FreemeUpdate/res/layout/common_preference_listview.xml
+* FreemeUpdate/res/layout/freeme_preference.xml
+* FreemeUpdate/res/layout/preference_widget_checkbox.xml
+* FreemeUpdate/res/layout/update_setting.xml
+* FreemeUpdate/res/layout/update_setting_preference.xml
+* FreemeUpdate/res/layout/updateself_dialog_custom_content.xml
+* FreemeUpdate/res/values-ar/
+* FreemeUpdate/res/values-ar/updateself_strings.xml
+* FreemeUpdate/res/values-bg/
+* FreemeUpdate/res/values-bg/updateself_strings.xml
+* FreemeUpdate/res/values-bn-rBD/
+* FreemeUpdate/res/values-bn-rBD/updateself_strings.xml
+* FreemeUpdate/res/values-cs/
+* FreemeUpdate/res/values-cs/updateself_strings.xml
+* FreemeUpdate/res/values-de/
+* FreemeUpdate/res/values-de/updateself_strings.xml
+* FreemeUpdate/res/values-es/
+* FreemeUpdate/res/values-es/updateself_strings.xml
+* FreemeUpdate/res/values-fr/
+* FreemeUpdate/res/values-fr/updateself_strings.xml
+* FreemeUpdate/res/values-hi/
+* FreemeUpdate/res/values-hi/updateself_strings.xml
+* FreemeUpdate/res/values-hr/
+* FreemeUpdate/res/values-hr/updateself_strings.xml
+* FreemeUpdate/res/values-hu/
+* FreemeUpdate/res/values-hu/updateself_strings.xml
+* FreemeUpdate/res/values-in-rID/
+* FreemeUpdate/res/values-in-rID/updateself_strings.xml
+* FreemeUpdate/res/values-it/
+* FreemeUpdate/res/values-it/updateself_strings.xml
+* FreemeUpdate/res/values-ms-rMY/
+* FreemeUpdate/res/values-ms-rMY/updateself_strings.xml
+* FreemeUpdate/res/values-pl/
+* FreemeUpdate/res/values-pl/updateself_strings.xml
+* FreemeUpdate/res/values-pt-rPT/
+* FreemeUpdate/res/values-pt-rPT/updateself_strings.xml
+* FreemeUpdate/res/values-pt/
+* FreemeUpdate/res/values-pt/updateself_strings.xml
+* FreemeUpdate/res/values-ro-rRO/
+* FreemeUpdate/res/values-ro-rRO/updateself_strings.xml
+* FreemeUpdate/res/values-ru/
+* FreemeUpdate/res/values-ru/updateself_strings.xml
+* FreemeUpdate/res/values-sk/
+* FreemeUpdate/res/values-sk/updateself_strings.xml
+* FreemeUpdate/res/values-th/
+* FreemeUpdate/res/values-th/updateself_strings.xml
+* FreemeUpdate/res/values-uk/
+* FreemeUpdate/res/values-uk/updateself_strings.xml
+* FreemeUpdate/res/values-v14/
+* FreemeUpdate/res/values-v14/updateself_styles.xml
+* FreemeUpdate/res/values-v21/
+* FreemeUpdate/res/values-v21/updateself_styles.xml
+* FreemeUpdate/res/values-vi/
+* FreemeUpdate/res/values-vi/updateself_strings.xml
+* FreemeUpdate/res/values-zh-rCN/
+* FreemeUpdate/res/values-zh-rCN/updateself_strings.xml
+* FreemeUpdate/res/values-zh-rTW/
+* FreemeUpdate/res/values-zh-rTW/updateself_strings.xml
+* FreemeUpdate/res/values/
+* FreemeUpdate/res/values/freeme_common_attrs.xml
+* FreemeUpdate/res/values/freeme_common_dimens.xml
+* FreemeUpdate/res/values/freeme_common_styles.xml
+* FreemeUpdate/res/values/updatself_strings.xml
+* FreemeUpdate/res/xml/
+* FreemeUpdate/res/xml/update_setting_preference.xml
+* FreemeUpdate/src/
+* FreemeUpdate/src/com/
+* FreemeUpdate/src/com/freeme/
+* FreemeUpdate/src/com/freeme/apk/
+* FreemeUpdate/src/com/freeme/apk/ui/
+* FreemeUpdate/src/com/freeme/apk/ui/UpdateSettingActivity.java
+* FreemeUpdate/src/com/freeme/apk/view/
+* FreemeUpdate/src/com/freeme/apk/view/FreemeCheckboxPreference.java
+* FreemeUpdate/src/com/freeme/apk/view/FreemePreference.java
+* FreemeUpdate/src/com/freeme/apk/view/SlidingSwitch.java
+* classes.jar
+
+Replaced Jars with Dependencies:
+--------------------------------
+The importer recognized the following .jar files as third party
+libraries and replaced them with Gradle dependencies instead. This has
+the advantage that more explicit version information is known, and the
+libraries can be updated automatically. However, it is possible that
+the .jar file in your project was of an older version than the
+dependency we picked, which could render the project not compileable.
+You can disable the jar replacement in the import wizard and try again:
+
+android-support-v4.jar => com.android.support:support-v4:23.4.0
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+In FreemeUpdate:
+* AndroidManifest.xml => freemeUpdate/src/main/AndroidManifest.xml
+* assets/ => freemeUpdate/src/main/assets/
+* libs/UpdateSDK-V1.jar => freemeUpdate/libs/UpdateSDK-V1.jar
+* res/ => freemeUpdate/src/main/res/
+* src/ => freemeUpdate/src/main/java/
+In FileExplorerTabActivity:
+* AndroidManifest.xml => fileExplorerTabActivity/src/main/AndroidManifest.xml
+* assets/ => fileExplorerTabActivity/src/main/assets/
+* libs/android-support-v13.jar => fileExplorerTabActivity/libs/android-support-v13.jar
+* libs/org.apache.httpcomponents.httpcore_4.4.4.jar => fileExplorerTabActivity/libs/org.apache.httpcomponents.httpcore_4.4.4.jar
+* res/ => fileExplorerTabActivity/src/main/res/
+* src/ => fileExplorerTabActivity/src/main/java/
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)

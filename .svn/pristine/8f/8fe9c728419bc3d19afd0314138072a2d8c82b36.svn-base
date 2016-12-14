@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/select_all_menu" 
+        android:title="@string/select_all"
+        android:icon="@drawable/actionbar_fm_select_all" 
+        android:showAsAction="ifRoom" />
+    <item android:id="@+id/deselect_all_menu" 
+        android:title="@string/deselect_all"
+        android:icon="@drawable/actionbar_fm_deselect_all" 
+        android:showAsAction="ifRoom" />
+    <item android:id="@+id/copy" 
+        android:title="@string/copy"
+        android:icon="@drawable/actionbar_fm_copy" 
+        android:showAsAction="ifRoom" />
+    <item android:id="@+id/delete" 
+        android:title="@string/delete"
+        android:icon="@drawable/actionbar_fm_delete" 
+        android:showAsAction="always" />
+    <item android:id="@+id/popup_menu" 
+        android:title="@string/more"
+        android:icon="@drawable/actionbar_fm_more" 
+        android:showAsAction="always" />
+</menu>

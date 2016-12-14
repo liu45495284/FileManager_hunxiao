@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Root>
+    <general_config id="0">
+        <!-- isHideFTP(是否隐藏远程管理)设置为false，文件管理器的FTP(远程管理功能)将被关闭 -->
+        <isHideFTP>true</isHideFTP>
+        <!-- memoryCardInfo(手机内部存储)设置为除0之外的其他任何数据，文件管理器的内部存储将被显示为设置的数据;当设置为0时，显示的是正常的数据 -->
+        <memoryCardInfo>0</memoryCardInfo>
+        <!-- isNeedRingTone(是否需要铃声功能)设置为true，文件管理器的将音乐设置为铃声功能将被打开 -->
+        <isNeedRingTone>false</isNeedRingTone>
+    </general_config>
+</Root>

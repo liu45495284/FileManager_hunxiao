@@ -1,0 +1,84 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+    
+            <!--<ImageButton  -->
+                <!--android:id="@+id/about_detail_ib"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingTop="@dimen/about_back_top"-->
+                <!--android:paddingBottom="@dimen/about_padding_bottom"-->
+                <!--android:paddingRight="@dimen/about_padding"-->
+                <!--android:paddingLeft="@dimen/about_padding"-->
+                <!--android:src="@drawable/back"-->
+                <!--android:background="@null"-->
+                <!--android:clickable="true"-->
+                <!--/>-->
+            
+            <!--<TextView-->
+                <!--android:id="@+id/about_detail_tv"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingTop="@dimen/about_padding"-->
+                <!--android:paddingBottom="@dimen/about_padding"-->
+                <!--android:layout_toRightOf="@+id/about_detail_ib"-->
+                <!--android:text="@string/about_detail_msg"-->
+                <!--android:textColor="@color/about_text_color"-->
+                <!--android:textSize="@dimen/about_title_text_size"-->
+                <!--/> -->
+            
+                 <RelativeLayout 
+                   android:id="@+id/freemeabout_channel_relative_layout"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   >
+                    <TextView
+                        android:id="@+id/freemeabout_channel_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="@dimen/freemeabout_detail_row_margin_left"
+                        android:textSize="@dimen/freemeabout_title_text_size"
+                        android:textColor="@color/freemeabout_rightcopy_color"
+                        android:text="@string/freemeabout_channel_number"/>
+                    
+                        <TextView 
+                        android:id="@+id/freemeabout_channel_click_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="@dimen/freemeabout_detail_row_margin_left"
+                        android:textSize="@dimen/freemeabout_title_text_size"
+                        android:layout_below="@id/freemeabout_channel_tv"
+                        android:textColor="@color/freemeabout_hint_color"
+                        />     
+                </RelativeLayout>
+                 <RelativeLayout 
+                   android:id="@+id/freemeabout_customer_relative_layout"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@id/freemeabout_channel_relative_layout"
+                   >
+                    <TextView 
+                        android:id="@+id/freemeabout_customer_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="@dimen/freemeabout_detail_row_margin_left"
+                        android:textSize="@dimen/freemeabout_title_text_size"
+                        android:textColor="@color/freemeabout_rightcopy_color"
+                        android:text="@string/freemeabout_customer_number"/>
+                    
+                        <TextView 
+                        android:id="@+id/freemeabout_customer_click_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="@dimen/freemeabout_detail_row_margin_left"
+                        android:textSize="@dimen/freemeabout_title_text_size"
+                        android:layout_below="@id/freemeabout_customer_tv"
+                        android:textColor="@color/freemeabout_hint_color"
+                        />
+                </RelativeLayout>                    
+</RelativeLayout>

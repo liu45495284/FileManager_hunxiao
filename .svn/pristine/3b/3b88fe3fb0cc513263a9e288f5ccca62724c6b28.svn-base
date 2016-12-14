@@ -1,0 +1,15 @@
+package com.freeme.apk.view;
+
+import android.content.Context;
+import android.preference.Preference;
+import android.util.AttributeSet;
+
+import com.freeme.apk.updateself.R;
+
+public class FreemePreference extends Preference {
+
+    public FreemePreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        setLayoutResource(R.layout.freeme_preference);
+    }
+}

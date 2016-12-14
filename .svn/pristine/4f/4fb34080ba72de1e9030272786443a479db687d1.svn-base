@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.freeme.filemanager.view.FileListItem    
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="5dip"
+    android:paddingTop="5dip"
+    android:paddingBottom="5dip"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@drawable/file_browser_item_background">
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/file_image"
+            android:layout_width="@dimen/flie_item_line_height"
+            android:layout_height="@dimen/flie_item_line_height"
+            android:scaleType="centerInside"
+            android:gravity="center"
+            android:layout_gravity="center" />
+        <ImageView
+            android:id="@+id/favorite_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right|center"
+            android:src="@drawable/favorite_tag"
+            android:visibility="gone" />
+    </FrameLayout>
+    <LinearLayout
+        android:id="@+id/file_info_layout"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="5dip">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/file_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="#020202"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <TextView
+                android:id="@+id/file_count"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/modified_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:gravity="left"
+                android:textSize="12dp"
+                android:textColor="@color/file_detail_text_color"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+            <TextView
+                android:id="@+id/file_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="10px"
+                android:gravity="left"
+                android:textSize="12dp"
+                android:textColor="@color/file_detail_text_color"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/file_checkbox_area"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingLeft="5dip"
+        android:paddingRight="5dip">
+
+        <!--ImageView
+            android:id="@+id/file_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:gravity="center"
+            android:layout_gravity="center" /-->
+            
+        <CheckBox 
+            android:id="@+id/file_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:gravity="center"
+            android:button="@drawable/checkbox_style"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:focusable="false" /> 
+    </FrameLayout>
+</com.freeme.filemanager.view.FileListItem>
